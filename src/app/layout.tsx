@@ -1,6 +1,37 @@
 import "./globals.css";
 import React from "react";
 import { Analytics } from "@vercel/analytics/next";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "TTWrapped - Your TikTok Year in Review",
+  description:
+    "Analyze your TikTok data export with a Spotify Wrapped-style experience. View your watch time, activity stats, and personality profile - all processed privately in your browser.",
+
+  openGraph: {
+    title: "TTWrapped - Your TikTok Year in Review",
+    description: "Analyze your TikTok data export with a Spotify Wrapped-style experience.",
+    url: "https://ttwrapped.com",
+    siteName: "TTWrapped",
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "TTWrapped - TikTok Analytics",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "TTWrapped - Your TikTok Year in Review",
+    description: "Analyze your TikTok data export with a Spotify Wrapped-style experience.",
+    images: ["/og-image.png"],
+  },
+};
 
 export default function RootLayout({
   children,
