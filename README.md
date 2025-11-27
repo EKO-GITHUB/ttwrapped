@@ -8,7 +8,6 @@ TTWrapped processes your TikTok data export to show you:
 
 - **Slideshow Experience**: An auto-playing presentation highlighting your top stats like videos watched, total watch time, engagement patterns, and a personalized profile type
 - **Analytics Dashboard**: Detailed breakdowns of your activity including login history, comments, direct messages, shopping activity, and more
-- **Privacy Profile**: Summary of your TikTok privacy settings and preferences
 
 All data processing happens entirely in your browser. Nothing is uploaded to any server.
 
@@ -24,7 +23,7 @@ All data processing happens entirely in your browser. Nothing is uploaded to any
 Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/yourusername/ttwrapped.git
+git clone https://github.com/EKO-GITHUB/ttwrapped.git
 cd ttwrapped
 npm install
 ```
