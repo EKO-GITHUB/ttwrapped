@@ -31,17 +31,6 @@ export default function Story_Slideshow() {
     comment_is_valid,
     direct_message_is_valid,
   );
-  if (invalid_sections.length > 0) {
-    return <Slideshow_Validation_Error invalid_sections={invalid_sections} />;
-  }
-
-  if (!slides || slides.length === 0) {
-    return (
-      <div className="flex h-[100dvh] w-full items-center justify-center bg-black">
-        <div className="text-center text-white">No slides available. Please upload a JSON file.</div>
-      </div>
-    );
-  }
 
   const go_next = useCallback(() => {
     if (current_index < slides.length - 1) {
@@ -113,7 +102,22 @@ export default function Story_Slideshow() {
         }
       };
     }
-  }, [current_index, is_paused, go_next]);
+  }, [current_index, is_paused, go_next, progress]);
+
+
+  if (invalid_sections.length > 0) {
+    return <Slideshow_Validation_Error invalid_sections={invalid_sections} />;
+  }
+
+  if (!slides || slides.length === 0) {
+    return (
+      <div className="flex h-[100dvh] w-full items-center justify-center bg-black">
+        <div className="text-center text-white">No slides available. Please upload a JSON file.</div>
+      </div>
+    );
+  }
+
+
 
   const handle_click = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
