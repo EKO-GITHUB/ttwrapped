@@ -53,6 +53,14 @@ export default function Story_Slideshow() {
   }, [current_index]);
 
   useEffect(() => {
+    const background_images = slides.map((slide) => slide.bg_image);
+    background_images.forEach((image_url) => {
+      const img = new Image();
+      img.src = image_url;
+    });
+  }, [slides]);
+
+  useEffect(() => {
     if (is_paused) {
       paused_progress_ref.current = progress;
       if (animation_frame_ref.current) {
