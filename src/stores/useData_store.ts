@@ -6,6 +6,8 @@ import { generate_slides } from "./generate_slides";
 import { parse_file } from "./parse_file";
 import { validate_sections } from "./validate_sections";
 import { build_state } from "./build_state";
+import { TikTok_Data } from "@/types/TikTok_Data_Schema";
+import { generate_demo_data } from "@/demo_data_generator/generate_demo_data";
 
 export const useData_store = create<UseData_store>((set, get) => ({
   ...initial_state,
@@ -39,13 +41,8 @@ export const useData_store = create<UseData_store>((set, get) => ({
     set({ is_loading: true, error: null });
 
     try {
-      const response = await fetch("/demo/demo-user-data.json");
-      if (!response.ok) {
-        throw new Error(`Failed to load demo data (HTTP ${response.status})`);
-      }
-
-      const parsed_data = await response.json();
-      const section_state = validate_sections(parsed_data);
+      const demo_data: TikTok_Data = generate_demo_data();
+      const section_state = validate_sections(demo_data);
       const new_state = build_state(section_state);
 
       set(new_state);
