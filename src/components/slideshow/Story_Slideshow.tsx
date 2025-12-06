@@ -149,7 +149,10 @@ export default function Story_Slideshow() {
             progress={progress}
           />
 
-          <Close_Button on_click={go_to_complete} />
+          <Close_Button
+            on_click={go_to_complete}
+            invert_colors={current_index == 0}
+          />
           <Slide_Content>{current_slide.content}</Slide_Content>
           <Navigation_Hints show_prev={current_index > 0} />
           <Status_Text
@@ -185,14 +188,19 @@ function Progress_Bar({ total, current_index, progress }: { total: number; curre
   );
 }
 
-function Close_Button({ on_click }: { on_click: () => void }) {
+function Close_Button({ on_click, invert_colors }: { on_click: () => void; invert_colors?: boolean }) {
   return (
     <button
       onClick={(e) => {
         e.stopPropagation();
         on_click();
       }}
-      className="absolute top-4 right-4 rounded-full p-2 text-white/80 transition-colors hover:cursor-pointer hover:bg-white/20 hover:text-white"
+      className={cn(
+        "absolute top-4 right-4 rounded-full p-2 transition-colors hover:cursor-pointer",
+        invert_colors
+          ? "text-black/80 hover:bg-black/20 hover:text-black"
+          : "text-white/80 hover:bg-white/20 hover:text-white",
+      )}
     >
       <X className="h-6 w-6" />
     </button>
