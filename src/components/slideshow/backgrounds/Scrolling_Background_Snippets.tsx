@@ -34,7 +34,6 @@ export function Scrolling_Background_Snippets() {
   });
 
   const [durations] = useState(() => Array.from({ length: COLUMN_COUNT }, () => 200 + Math.random() * 150));
-  console.log(durations);
 
   return (
     <div className="absolute inset-0 overflow-hidden">
