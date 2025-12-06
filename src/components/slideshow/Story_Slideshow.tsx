@@ -196,7 +196,7 @@ function Close_Button({ on_click, invert_colors }: { on_click: () => void; inver
         on_click();
       }}
       className={cn(
-        "absolute top-4 right-4 rounded-full p-2 transition-colors hover:cursor-pointer",
+        "absolute top-4 right-4 rounded-full p-2 hover:cursor-pointer",
         invert_colors
           ? "text-black/80 hover:bg-black/20 hover:text-black"
           : "text-white/80 hover:bg-white/20 hover:text-white",

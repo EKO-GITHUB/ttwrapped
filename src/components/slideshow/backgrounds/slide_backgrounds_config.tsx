@@ -17,14 +17,8 @@ export const slide_backgrounds_config: Record<string, React.ReactNode> = {
           ease: "linear",
         }}
       />
-      <div
-        className={"absolute inset-0 h-[90%] w-[85%] translate-x-[10%] translate-y-[5%] overflow-hidden rounded-3xl"}
-      >
-        <div
-          className={
-            "h-full w-full bg-black bg-gradient-to-b bg-[radial-gradient(circle_500px_at_50%_200px,#3e3e3e,transparent)]"
-          }
-        />
+      <div className="absolute inset-0 h-[90%] w-[85%] translate-x-[10%] translate-y-[5%] overflow-hidden rounded-xl">
+        <div className="absolute top-0 h-full w-full bg-slate-900"></div>
       </div>
     </div>
   ),
