@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useData_store } from "@/stores/useData_store";
-import { Slideshow_Validation_Error } from "./Slideshow_Validation_Error";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Animated_Background } from "./Animated_Background";
+import { Slideshow_Validation_Error } from "./Slideshow_Validation_Error";
 
 const SLIDE_PAUSE = 1000;
 const SLIDE_PROGRESS_DURATION = 1000 * 5;
@@ -105,7 +105,6 @@ export default function Story_Slideshow() {
     }
   }, [current_index, is_paused, go_next, progress]);
 
-
   if (invalid_sections.length > 0) {
     return <Slideshow_Validation_Error invalid_sections={invalid_sections} />;
   }
@@ -117,8 +116,6 @@ export default function Story_Slideshow() {
       </div>
     );
   }
-
-
 
   const handle_click = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -139,7 +136,7 @@ export default function Story_Slideshow() {
   return (
     <div className="flex h-[100dvh] w-full items-center justify-center bg-black">
       <div
-        className="relative flex h-full w-full flex-col overflow-hidden sm:max-w-md md:max-w-lg"
+        className="relative flex h-full w-full flex-col overflow-hidden"
         onClick={handle_click}
       >
         <Animated_Background slide_id={current_slide.id} />
@@ -160,7 +157,6 @@ export default function Story_Slideshow() {
     </div>
   );
 }
-
 
 function Progress_Bar({ total, current_index, progress }: { total: number; current_index: number; progress: number }) {
   return (

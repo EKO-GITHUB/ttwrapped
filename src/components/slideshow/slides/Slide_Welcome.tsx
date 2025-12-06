@@ -1,13 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useData_store } from "@/stores/useData_store";
+import { motion } from "framer-motion";
+
+const one_year_ago = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
+const formatted_date = one_year_ago.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" });
 
 export function Slide_Welcome() {
   const profile = useData_store((state) => state.profile);
-
-  const one_year_ago = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
-  const formatted_date = one_year_ago.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" });
 
   const profile_photo = profile!["Profile Info"].ProfileMap.profilePhoto;
   const username = profile!["Profile Info"].ProfileMap.userName;
@@ -20,7 +20,8 @@ export function Slide_Welcome() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        Your TikTok Wrapped
+        Your <br />
+        TikTok Wrapped
       </motion.p>
       {profile_photo && (
         <motion.img
