@@ -3,11 +3,12 @@
 import { motion } from "framer-motion";
 import React, { useMemo } from "react";
 
-const TOTAL_BACKGROUNDS = 57;
-const COLUMN_COUNT = 12;
+const TOTAL_BACKGROUNDS = 93;
+const COLUMN_COUNT = 24;
 const SNIPPETS_PER_COLUMN = 20;
-const SNIPPET_HEIGHT = 200;
-const SNIPPET_GAP = 15;
+const SNIPPET_HEIGHT = 192;
+const SNIPPET_WIDTH = 108;
+const SNIPPET_GAP = 10;
 
 type Scrolling_Column_Props = {
   index: number;
@@ -60,8 +61,8 @@ function Scrolling_Column({ index, background_indices }: Scrolling_Column_Props)
       className="flex-shrink-0 overflow-hidden rounded-lg"
       style={{
         height: `${SNIPPET_HEIGHT}px`,
-        width: `${SNIPPET_HEIGHT}px`,
-        backgroundImage: `url(/slideshow_backgrounds/bg-slide-${bg_index}.jpg)`,
+        width: `${SNIPPET_WIDTH}px`,
+        backgroundImage: `url(/slideshow_backgrounds/video_wall/bg-video-wall-${bg_index}.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         opacity: 0.2,
