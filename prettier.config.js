@@ -1,6 +1,6 @@
 /** @type {import('prettier').Config & import('prettier-plugin-tailwindcss').PluginOptions} */
 const config = {
-  plugins: ["prettier-plugin-tailwindcss"],
+  plugins: ["@trivago/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
   printWidth: 120,
   tabWidth: 2,
   useTabs: false,
@@ -13,10 +13,11 @@ const config = {
   arrowParens: "always",
   endOfLine: "lf",
   embeddedLanguageFormatting: "auto",
-  // Force consistent object formatting
   singleAttributePerLine: true,
-  // Force consistent array element formatting when any element is multiline
   experimentalTernaries: false,
+  importOrder: ["^@core/(.*)$", "^@server/(.*)$", "^@ui/(.*)$", "^[./]"],
+  importOrderSeparation: false,
+  importOrderSortSpecifiers: true,
 };
 
 export default config;
