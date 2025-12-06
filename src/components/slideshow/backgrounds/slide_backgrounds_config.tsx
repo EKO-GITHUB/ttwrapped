@@ -22,4 +22,15 @@ export const slide_backgrounds_config: Record<string, React.ReactNode> = {
       </div>
     </div>
   ),
+  videos: <></>,
+  watch_time: <></>,
+  sessions: <></>,
+  daily_avg: <></>,
+  download_size: <></>,
+  likes: <></>,
+  comments: <></>,
+  shares: <></>,
+  direct_messages: <></>,
+  overview: <></>,
+  complete: <></>,
 };
