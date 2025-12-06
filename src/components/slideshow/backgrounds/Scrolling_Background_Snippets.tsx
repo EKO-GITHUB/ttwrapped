@@ -8,7 +8,7 @@ const COLUMN_COUNT = 24;
 const SNIPPETS_PER_COLUMN = 20;
 const SNIPPET_HEIGHT = 192;
 const SNIPPET_WIDTH = 108;
-const SNIPPET_GAP = 10;
+const SNIPPET_GAP = 4;
 
 type Scrolling_Column_Props = {
   index: number;
@@ -74,7 +74,7 @@ function Scrolling_Column({ index, background_indices }: Scrolling_Column_Props)
   return (
     <div
       className="relative flex-shrink-0"
-      style={{ width: "200px" }}
+      style={{ width: "120px" }}
     >
       <motion.div
         className="flex flex-col"
