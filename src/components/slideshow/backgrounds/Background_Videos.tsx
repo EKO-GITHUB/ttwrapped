@@ -1,24 +1,22 @@
+"use client";
+
+import { Background_Panel } from "@/components/slideshow/backgrounds/Background_Panel";
 import { motion } from "framer-motion";
 import React from "react";
 
 export function Background_Videos() {
   return (
-    <div className="h-full w-full">
+    <div className="relative h-full w-full overflow-hidden">
       <svg className="absolute inset-0 h-full w-full">
         <defs>
-          <filter
-            id="noise-filter-videos"
-            x="0%"
-            y="0%"
-            width="100%"
-            height="100%"
-          >
+          <filter id="noise-filter-videos">
             <feTurbulence
               type="fractalNoise"
               baseFrequency="0.65"
               numOctaves="4"
               seed="2"
               stitchTiles="stitch"
+              result="turbulence"
             >
               <animate
                 attributeName="baseFrequency"
@@ -28,19 +26,20 @@ export function Background_Videos() {
               />
             </feTurbulence>
             <feColorMatrix
+              in="turbulence"
               type="saturate"
-              values="0.3"
+              values="0.2"
+              result="saturated"
             />
-            <feComponentTransfer>
+            <feComponentTransfer
+              in="saturated"
+              result="opacity"
+            >
               <feFuncA
-                type="discrete"
-                tableValues="0.7"
+                type="linear"
+                slope="0.5"
               />
             </feComponentTransfer>
-            <feBlend
-              mode="overlay"
-              in2="SourceGraphic"
-            />
           </filter>
           <linearGradient
             id="gradient-videos-1"
@@ -101,9 +100,10 @@ export function Background_Videos() {
           width="100%"
           height="100%"
           filter="url(#noise-filter-videos)"
-          opacity="0.8"
+          opacity="0.6"
         />
       </svg>
+      <Background_Panel bg_color={"teal"} />
     </div>
   );
 }

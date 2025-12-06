@@ -1,3 +1,4 @@
+import { Background_Panel } from "@/components/slideshow/backgrounds/Background_Panel";
 import { motion } from "framer-motion";
 import React from "react";
 
@@ -15,9 +16,7 @@ export function Background_Welcome() {
           ease: "linear",
         }}
       />
-      <div className="absolute inset-0 h-[90%] w-[85%] translate-x-[10%] translate-y-[5%] overflow-hidden rounded-xl">
-        <div className="absolute top-0 h-full w-full bg-slate-900"></div>
-      </div>
+      <Background_Panel bg_color={"slate"} />
     </div>
   );
 }
