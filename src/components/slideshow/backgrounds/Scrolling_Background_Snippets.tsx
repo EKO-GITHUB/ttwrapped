@@ -17,11 +17,21 @@ type Scrolling_Column_Props = {
 };
 
 export function Scrolling_Background_Snippets() {
-  const [columns] = useState(() =>
-    Array.from({ length: COLUMN_COUNT }, () =>
-      Array.from({ length: SNIPPETS_PER_COLUMN }, () => Math.floor(Math.random() * TOTAL_BACKGROUNDS) + 1),
-    ),
-  );
+  const [columns] = useState(() => {
+    const total_needed = COLUMN_COUNT * SNIPPETS_PER_COLUMN;
+    const background_pool: number[] = [];
+
+    while (background_pool.length < total_needed) {
+      const shuffled = Array.from({ length: TOTAL_BACKGROUNDS }, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+      background_pool.push(...shuffled);
+    }
+
+    const distributed_backgrounds = background_pool.slice(0, total_needed);
+
+    return Array.from({ length: COLUMN_COUNT }, (_, col_index) =>
+      distributed_backgrounds.slice(col_index * SNIPPETS_PER_COLUMN, (col_index + 1) * SNIPPETS_PER_COLUMN),
+    );
+  });
 
   const [durations] = useState(() => Array.from({ length: COLUMN_COUNT }, () => 200 + Math.random() * 150));
   console.log(durations);
