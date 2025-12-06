@@ -1,26 +1,30 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React, { useMemo } from "react";
+import React, { useState } from "react";
 
 const TOTAL_BACKGROUNDS = 93;
 const COLUMN_COUNT = 24;
 const SNIPPETS_PER_COLUMN = 20;
 const SNIPPET_HEIGHT = 192;
 const SNIPPET_WIDTH = 108;
-const SNIPPET_GAP = 4;
+const SNIPPET_GAP = 15;
 
 type Scrolling_Column_Props = {
   index: number;
   background_indices: number[];
+  duration: number;
 };
 
 export function Scrolling_Background_Snippets() {
-  const columns = useMemo(() => {
-    return Array.from({ length: COLUMN_COUNT }, () =>
+  const [columns] = useState(() =>
+    Array.from({ length: COLUMN_COUNT }, () =>
       Array.from({ length: SNIPPETS_PER_COLUMN }, () => Math.floor(Math.random() * TOTAL_BACKGROUNDS) + 1),
-    );
-  }, []);
+    ),
+  );
+
+  const [durations] = useState(() => Array.from({ length: COLUMN_COUNT }, () => 100 + Math.random() * 150));
+  console.log(durations);
 
   return (
     <div className="absolute inset-0 overflow-hidden">
@@ -43,6 +47,7 @@ export function Scrolling_Background_Snippets() {
             key={index}
             index={index}
             background_indices={background_indices}
+            duration={durations[index]}
           />
         ))}
       </div>
@@ -50,10 +55,9 @@ export function Scrolling_Background_Snippets() {
   );
 }
 
-function Scrolling_Column({ index, background_indices }: Scrolling_Column_Props) {
+function Scrolling_Column({ index, background_indices, duration }: Scrolling_Column_Props) {
   const direction = index % 2 === 0 ? -1 : 1;
   const total_height = SNIPPETS_PER_COLUMN * (SNIPPET_HEIGHT + SNIPPET_GAP);
-  const duration = 35 + index * 3;
 
   const render_snippet = (bg_index: number, key: string) => (
     <div
@@ -74,7 +78,7 @@ function Scrolling_Column({ index, background_indices }: Scrolling_Column_Props)
   return (
     <div
       className="relative flex-shrink-0"
-      style={{ width: "120px" }}
+      style={{ width: "115px" }}
     >
       <motion.div
         className="flex flex-col"
