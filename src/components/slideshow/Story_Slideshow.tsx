@@ -154,7 +154,10 @@ export default function Story_Slideshow() {
             invert_colors={current_index == 0}
           />
           <Slide_Content>{current_slide.content}</Slide_Content>
-          <Navigation_Hints show_prev={current_index > 0} />
+          <Navigation_Hints
+            show_prev={current_index > 0}
+            invert_colors={current_index == 0}
+          />
           <Status_Text
             is_paused={is_paused}
             invert_colors={current_index == 0}
@@ -188,7 +191,7 @@ function Progress_Bar({ total, current_index, progress }: { total: number; curre
   );
 }
 
-function Close_Button({ on_click, invert_colors }: { on_click: () => void; invert_colors?: boolean }) {
+function Close_Button({ on_click, invert_colors }: { on_click: () => void; invert_colors: boolean }) {
   return (
     <button
       onClick={(e) => {
@@ -211,14 +214,16 @@ function Slide_Content({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-1 flex-col items-center justify-center px-6 text-center text-white">{children}</div>;
 }
 
-function Navigation_Hints({ show_prev }: { show_prev: boolean }) {
+function Navigation_Hints({ show_prev, invert_colors }: { show_prev: boolean; invert_colors: boolean }) {
   return (
     <>
-      <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center">
-        <ChevronLeft className={`h-8 w-8 text-white/50 ${show_prev ? "" : "opacity-0"}`} />
+      <div className="pointer-events-none absolute inset-y-0 left-1 flex items-center">
+        <ChevronLeft
+          className={cn("h-8 w-8", show_prev ? "" : "opacity-0", invert_colors ? "text-black/50" : "text-white/50")}
+        />
       </div>
-      <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
-        <ChevronRight className="h-8 w-8 text-white/50" />
+      <div className="pointer-events-none absolute inset-y-0 right-1 flex items-center">
+        <ChevronRight className={cn("h-8 w-8", invert_colors ? "text-black/50" : "text-white/50")} />
       </div>
     </>
   );
