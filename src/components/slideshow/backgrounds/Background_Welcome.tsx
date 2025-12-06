@@ -16,7 +16,7 @@ export function Background_Welcome() {
           ease: "linear",
         }}
       />
-      <Background_Panel bg_color={"slate"} />
+      <Background_Panel className={"bg-slate-800"} />
     </div>
   );
 }
