@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { useData_store } from "@/stores/useData_store";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -103,7 +104,7 @@ export default function Story_Slideshow() {
         }
       };
     }
-  }, [current_index, is_paused, go_next, progress]);
+  }, [current_index, is_paused, go_next]);
 
   if (invalid_sections.length > 0) {
     return <Slideshow_Validation_Error invalid_sections={invalid_sections} />;
@@ -164,10 +165,10 @@ function Progress_Bar({ total, current_index, progress }: { total: number; curre
       {Array.from({ length: total }).map((_, index) => (
         <div
           key={index}
-          className="h-1 flex-1 overflow-hidden rounded-full bg-white/30"
+          className={cn("h-1 flex-1 overflow-hidden rounded-full bg-white/30", current_index === 0 && "bg-black/30")}
         >
           <div
-            className="h-full bg-white"
+            className={cn("h-full bg-white", current_index === 0 && "bg-black")}
             style={{
               width: index < current_index ? "100%" : index === current_index ? `${progress}%` : "0%",
               transition: index === current_index ? "none" : "width 300ms",

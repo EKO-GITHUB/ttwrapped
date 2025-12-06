@@ -9,5 +9,5 @@ type Animated_Background_Props = {
 export function Animated_Background({ slide_id }: Animated_Background_Props) {
   const background = slide_backgrounds_config[slide_id];
 
-  return <div className="absolute h-full w-full">{background}</div>;
+  return <div className="absolute z-0 h-full w-full">{background}</div>;
 }
