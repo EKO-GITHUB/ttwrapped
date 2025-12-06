@@ -152,7 +152,10 @@ export default function Story_Slideshow() {
           <Close_Button on_click={go_to_complete} />
           <Slide_Content>{current_slide.content}</Slide_Content>
           <Navigation_Hints show_prev={current_index > 0} />
-          <Status_Text is_paused={is_paused} />
+          <Status_Text
+            is_paused={is_paused}
+            invert_colors={current_index == 0}
+          />
         </div>
       </div>
     </div>
@@ -160,15 +163,17 @@ export default function Story_Slideshow() {
 }
 
 function Progress_Bar({ total, current_index, progress }: { total: number; current_index: number; progress: number }) {
+  const invert_colors = current_index === 0;
+
   return (
     <div className="flex gap-1 p-4">
       {Array.from({ length: total }).map((_, index) => (
         <div
           key={index}
-          className={cn("h-1 flex-1 overflow-hidden rounded-full bg-white/30", current_index === 0 && "bg-black/30")}
+          className={cn("h-1 flex-1 overflow-hidden rounded-full", invert_colors ? "bg-black/30" : "bg-white/30")}
         >
           <div
-            className={cn("h-full bg-white", current_index === 0 && "bg-black")}
+            className={cn("h-full", invert_colors ? "bg-black" : "bg-white")}
             style={{
               width: index < current_index ? "100%" : index === current_index ? `${progress}%` : "0%",
               transition: index === current_index ? "none" : "width 300ms",
@@ -211,9 +216,9 @@ function Navigation_Hints({ show_prev }: { show_prev: boolean }) {
   );
 }
 
-function Status_Text({ is_paused }: { is_paused: boolean }) {
+function Status_Text({ is_paused, invert_colors }: { is_paused: boolean; invert_colors?: boolean }) {
   return (
-    <div className="p-4 text-center text-sm text-white/40">
+    <div className={cn("p-4 text-center text-sm", invert_colors ? "text-black/80" : "text-white/80")}>
       {is_paused ? "Paused - tap center to resume" : "Tap to navigate"}
     </div>
   );
