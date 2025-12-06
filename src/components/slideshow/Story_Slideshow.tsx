@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useData_store } from "@/stores/useData_store";
 import { Slideshow_Validation_Error } from "./Slideshow_Validation_Error";
+import { Animated_Background } from "./Animated_Background";
 
 const SLIDE_PAUSE = 1000;
 const SLIDE_PROGRESS_DURATION = 1000 * 5;
@@ -51,14 +52,6 @@ export default function Story_Slideshow() {
     paused_progress_ref.current = 0;
     start_time_ref.current = null;
   }, [current_index]);
-
-  useEffect(() => {
-    const background_images = slides.map((slide) => slide.bg_image);
-    background_images.forEach((image_url) => {
-      const img = new Image();
-      img.src = image_url;
-    });
-  }, [slides]);
 
   useEffect(() => {
     if (is_paused) {
@@ -149,7 +142,7 @@ export default function Story_Slideshow() {
         className="relative flex h-full w-full flex-col overflow-hidden sm:max-w-md md:max-w-lg"
         onClick={handle_click}
       >
-        <Background_Image image_url={current_slide.bg_image} />
+        <Animated_Background slide_id={current_slide.id} />
 
         <div className="relative z-10 flex flex-1 flex-col">
           <Progress_Bar
@@ -168,14 +161,6 @@ export default function Story_Slideshow() {
   );
 }
 
-function Background_Image({ image_url }: { image_url: string }) {
-  return (
-    <div
-      className="absolute inset-0 bg-cover bg-center opacity-60"
-      style={{ backgroundImage: `url(${image_url})` }}
-    />
-  );
-}
 
 function Progress_Bar({ total, current_index, progress }: { total: number; current_index: number; progress: number }) {
   return (
