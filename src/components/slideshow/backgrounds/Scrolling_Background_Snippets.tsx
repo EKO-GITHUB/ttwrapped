@@ -23,7 +23,7 @@ export function Scrolling_Background_Snippets() {
     ),
   );
 
-  const [durations] = useState(() => Array.from({ length: COLUMN_COUNT }, () => 100 + Math.random() * 150));
+  const [durations] = useState(() => Array.from({ length: COLUMN_COUNT }, () => 200 + Math.random() * 150));
   console.log(durations);
 
   return (
@@ -83,9 +83,9 @@ function Scrolling_Column({ index, background_indices, duration }: Scrolling_Col
       <motion.div
         className="flex flex-col"
         style={{ gap: `${SNIPPET_GAP}px` }}
-        initial={{ y: direction === -1 ? 0 : -total_height }}
+        initial={{ y: 0 }}
         animate={{
-          y: direction === -1 ? -total_height : 0,
+          y: direction === -1 ? -total_height : total_height,
         }}
         transition={{
           duration: duration,
@@ -96,7 +96,6 @@ function Scrolling_Column({ index, background_indices, duration }: Scrolling_Col
       >
         {background_indices.map((bg_index, i) => render_snippet(bg_index, `a-${i}`))}
         {background_indices.map((bg_index, i) => render_snippet(bg_index, `b-${i}`))}
-        {background_indices.map((bg_index, i) => render_snippet(bg_index, `c-${i}`))}
       </motion.div>
     </div>
   );
