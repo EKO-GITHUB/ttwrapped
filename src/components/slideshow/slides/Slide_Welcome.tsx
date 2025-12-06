@@ -36,7 +36,7 @@ export function Slide_Welcome() {
       )}
       {username && (
         <motion.p
-          className="mb-6 text-2xl font-semibold"
+          className="mb-6 font-semibold"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.8 }}
