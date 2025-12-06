@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { useData_store } from "@/stores/useData_store";
 
 export function Slide_Welcome() {
@@ -11,18 +14,59 @@ export function Slide_Welcome() {
 
   return (
     <>
-      <p className="mb-4 text-4xl font-bold">Your TikTok Wrapped</p>
+      <motion.p
+        className="mb-4 text-4xl font-bold"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        Your TikTok Wrapped
+      </motion.p>
       {profile_photo && (
-        <img
+        <motion.img
           src={profile_photo}
           alt={username || "Profile"}
           className="mb-2 h-28 w-28 rounded-full border-4 border-white/50 object-cover"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.5, type: "spring", bounce: 0.4 }}
+          whileHover={{ scale: 1.05 }}
         />
       )}
-      {username && <p className="mb-6 text-2xl font-semibold">@{username}</p>}
-      <p className="text-4xl">From</p>
-      <p className="text-4xl font-bold">{formatted_date}</p>
-      <p className="text-4xl">to today!</p>
+      {username && (
+        <motion.p
+          className="mb-6 text-2xl font-semibold"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          @{username}
+        </motion.p>
+      )}
+      <motion.p
+        className="text-4xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 1.1 }}
+      >
+        From
+      </motion.p>
+      <motion.p
+        className="text-4xl font-bold"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 1.3 }}
+      >
+        {formatted_date}
+      </motion.p>
+      <motion.p
+        className="text-4xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 1.5 }}
+      >
+        to today!
+      </motion.p>
     </>
   );
 }

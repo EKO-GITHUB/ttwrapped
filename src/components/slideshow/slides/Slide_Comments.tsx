@@ -1,4 +1,8 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { format_number } from "@/components/slideshow/format_number";
+import { Animated_Number } from "@/components/slideshow/Animated_Number";
 import { Comment } from "@/types/TikTok_Data_Schema";
 import { useData_store } from "@/stores/useData_store";
 
@@ -13,15 +17,72 @@ export function Slide_Comments() {
 
   return (
     <>
-      <p className="mb-4 text-lg font-medium opacity-80">Comments Posted</p>
-      <p className="mb-4 text-7xl font-bold">{format_number(count)}</p>
-      <p className="text-xl opacity-80">{count > 100 ? "You love to share your thoughts!" : "Quality over quantity"}</p>
+      <motion.p
+        className="mb-4 text-lg font-medium opacity-80"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 0.8, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        Comments Posted
+      </motion.p>
+      <motion.p
+        className="mb-4 text-7xl font-bold"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, delay: 0.4, type: "spring", bounce: 0.3 }}
+      >
+        <motion.span
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+        >
+          <Animated_Number value={count} duration={1.8} format={format_number} />
+        </motion.span>
+      </motion.p>
+      <motion.p
+        className="text-xl opacity-80"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.8 }}
+        transition={{ duration: 0.5, delay: 1.5 }}
+      >
+        {count > 100 ? "You love to share your thoughts!" : "Quality over quantity"}
+      </motion.p>
       {top_emoji && (
-        <div className="mt-6 space-y-2">
-          <p className="text-lg opacity-60">Your favorite emoji</p>
-          <p className="text-6xl">{top_emoji.emoji}</p>
-          <p className="text-sm opacity-50">used {format_number(top_emoji.count)} times</p>
-        </div>
+        <motion.div
+          className="mt-6 space-y-2"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 2.0 }}
+        >
+          <motion.p
+            className="text-lg opacity-60"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.6 }}
+            transition={{ duration: 0.5, delay: 2.2 }}
+          >
+            Your favorite emoji
+          </motion.p>
+          <motion.p
+            className="text-6xl"
+            initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.8, delay: 2.4, type: "spring", bounce: 0.5 }}
+          >
+            <motion.span
+              animate={{ rotate: [0, -10, 10, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 2 }}
+            >
+              {top_emoji.emoji}
+            </motion.span>
+          </motion.p>
+          <motion.p
+            className="text-sm opacity-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            transition={{ duration: 0.5, delay: 2.8 }}
+          >
+            used <Animated_Number value={top_emoji.count} duration={1.2} format={format_number} /> times
+          </motion.p>
+        </motion.div>
       )}
     </>
   );

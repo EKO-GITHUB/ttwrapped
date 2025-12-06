@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { useData_store } from "@/stores/useData_store";
 import { MessageCircle } from "lucide-react";
 import { Direct_Message_Item } from "@/types/TikTok_Data_Schema";
@@ -10,34 +13,86 @@ export function Slide_Direct_Messages() {
   if (top_friends.length === 0) {
     return (
       <>
-        <p className="mb-4 text-2xl font-medium opacity-90">Your Top Friends</p>
-        <MessageCircle className="mb-4 h-20 w-20 opacity-60" />
-        <p className="text-xl opacity-80">No direct messages found</p>
+        <motion.p
+          className="mb-4 text-2xl font-medium opacity-90"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 0.9, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          Your Top Friends
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 0.6, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <MessageCircle className="mb-4 h-20 w-20 opacity-60" />
+        </motion.div>
+        <motion.p
+          className="text-xl opacity-80"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.8 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          No direct messages found
+        </motion.p>
       </>
     );
   }
 
   return (
     <>
-      <p className="mb-4 text-2xl font-medium opacity-90">Your Top Friends</p>
-      <p className="mb-2 text-lg opacity-70">Who you chatted most with</p>
+      <motion.p
+        className="mb-4 text-2xl font-medium opacity-90"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 0.9, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        Your Top Friends
+      </motion.p>
+      <motion.p
+        className="mb-2 text-lg opacity-70"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.7 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
+        Who you chatted most with
+      </motion.p>
 
       <div className="w-full max-w-lg space-y-4">
         {top_friends.map((friend, index) => (
-          <div
+          <motion.div
             key={friend.name}
             className="flex items-center gap-4 rounded-xl bg-white/10 p-4 backdrop-blur-sm"
+            initial={{ opacity: 0, x: -50, scale: 0.8 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{
+              duration: 0.5,
+              delay: 0.6 + index * 0.2,
+              type: "spring",
+              bounce: 0.3,
+            }}
           >
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/20 text-2xl font-bold">
+            <motion.div
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/20 text-2xl font-bold"
+              initial={{ rotate: -180, scale: 0 }}
+              animate={{ rotate: 0, scale: 1 }}
+              transition={{
+                duration: 0.6,
+                delay: 0.8 + index * 0.2,
+                type: "spring",
+                bounce: 0.5,
+              }}
+            >
               {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
-            </div>
+            </motion.div>
             <div className="flex-1 text-left">
               <p className="text-base font-semibold">{friend.name}</p>
               <p className="text-sm opacity-80">
                 {friend.message_count} message{friend.message_count !== 1 ? "s" : ""}
               </p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </>
