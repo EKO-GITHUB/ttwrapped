@@ -22,7 +22,9 @@ function Slide_Export_Wrapper({
   logo_position?: "top" | "bottom";
 }) {
   const logo_section = (
-    <div className={cn("relative z-10 flex items-center justify-center gap-2", logo_position === "top" ? "pt-4" : "pb-4")}>
+    <div
+      className={cn("relative z-10 flex items-center justify-center gap-2", logo_position === "top" ? "pt-4" : "pb-4")}
+    >
       <Logo />
       <span className={cn("text-sm font-semibold opacity-90", invert_colors ? "text-black" : "text-white")}>
         TTWrapped
@@ -62,7 +64,8 @@ export async function export_slide_as_image(slide: Slide, index: number): Promis
       <Slide_Export_Wrapper
         background={slide.background}
         content={slide.content}
-        invert_colors={index == 0}
+        invert_colors={index == 1}
+        logo_position={index == 5 || index == 6 ? "top" : "bottom"}
       />,
     );
 
