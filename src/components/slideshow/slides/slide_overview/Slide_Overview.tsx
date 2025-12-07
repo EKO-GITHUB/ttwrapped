@@ -2,12 +2,12 @@
 
 import { format_number } from "@/components/slideshow/format_number";
 import { get_profile_definition } from "@/components/slideshow/slides/slide_overview/get_profile_definition";
+import { useExport } from "@/contexts/ExportContext";
 import { calculate_user_profile } from "@/stores/calculate_user_profile";
 import { useData_store } from "@/stores/useData_store";
 import { motion } from "framer-motion";
 import { Clock, Heart, Layers, LucideIcon, MessageCircle, Play, Share2, UserPlus, Users } from "lucide-react";
 import Image from "next/image";
-import { useExport } from "@/contexts/ExportContext";
 
 export function Slide_Overview() {
   const stats = useData_store((state) => state.stats);
@@ -121,13 +121,25 @@ export function Slide_Overview() {
           transition: { duration: 0.5, delay: 1.1 },
         })}
       >
-        <Dimension_Chip label="Consumption" level={profile_metrics.consumption} />
-        <Dimension_Chip label="Engagement" level={profile_metrics.engagement} />
-        <Dimension_Chip label="Sharing" level={profile_metrics.sharing} />
-        <Dimension_Chip label="Creation" level={profile_metrics.creation} />
+        <Dimension_Chip
+          label="Consumption"
+          level={profile_metrics.consumption}
+        />
+        <Dimension_Chip
+          label="Engagement"
+          level={profile_metrics.engagement}
+        />
+        <Dimension_Chip
+          label="Sharing"
+          level={profile_metrics.sharing}
+        />
+        <Dimension_Chip
+          label="Creation"
+          level={profile_metrics.creation}
+        />
       </motion.div>
 
-      <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
         <Stat_Box
           icon={Clock}
           label="Hours"
@@ -225,7 +237,7 @@ function Stat_Box({
         <Icon className={`h-6 w-6 ${color}`} />
       </div>
       <div className="grid w-full justify-center justify-items-center gap-1">
-        <span className="text-base font-bold leading-tight">{format_number(value)}</span>
+        <span className="text-base leading-tight font-bold">{format_number(value)}</span>
         <span className="text-xs text-white/60">{label}</span>
       </div>
     </motion.div>
