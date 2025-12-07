@@ -1,10 +1,10 @@
 "use client";
 
-import { BarChart3, Download, RotateCcw, Upload } from "lucide-react";
-import { useData_store } from "@/stores/useData_store";
-import { useState } from "react";
 import type { Slide } from "@/stores/types";
+import { useData_store } from "@/stores/useData_store";
 import html2canvas from "html2canvas-pro";
+import { BarChart3, Download, RotateCcw, Upload } from "lucide-react";
+import { useState } from "react";
 
 export default function Slideshow_Complete() {
   const [is_downloading, set_is_downloading] = useState(false);
@@ -114,7 +114,7 @@ function convert_lab_colors_to_rgb(element: HTMLElement) {
         if (value && (value.includes("lab(") || value.includes("oklch(") || value.includes("lch("))) {
           const rgb_value = convert_to_rgb(value);
           if (rgb_value) {
-            (el.style as any)[prop] = rgb_value;
+            el.style = rgb_value;
           }
         }
       });
@@ -158,7 +158,6 @@ async function export_slide_as_image(slide: Slide, index: number) {
   const background = document.createElement("div");
   background.style.position = "absolute";
   background.style.inset = "0";
-  background.style.backgroundImage = `url(${slide.bg_image})`;
   background.style.backgroundSize = "cover";
   background.style.backgroundPosition = "center";
   background.style.opacity = "0.6";

@@ -1,13 +1,13 @@
+import { generate_demo_data } from "@/demo_data_generator/generate_demo_data";
+import { TikTok_Data } from "@/types/TikTok_Data_Schema";
 import { create } from "zustand";
-import { App_State, UseData_store } from "./types";
-import { initial_state } from "./initial_state";
+import { build_state } from "./build_state";
 import { section_configs } from "./constants";
 import { generate_slides } from "./generate_slides";
+import { initial_state } from "./initial_state";
 import { parse_file } from "./parse_file";
+import { App_State, UseData_store } from "./types";
 import { validate_sections } from "./validate_sections";
-import { build_state } from "./build_state";
-import { TikTok_Data } from "@/types/TikTok_Data_Schema";
-import { generate_demo_data } from "@/demo_data_generator/generate_demo_data";
 
 export const useData_store = create<UseData_store>((set, get) => ({
   ...initial_state,
@@ -28,7 +28,7 @@ export const useData_store = create<UseData_store>((set, get) => ({
 
       set(new_state);
       set({
-        slides: generate_slides(new_state.slideshow_backgrounds),
+        slides: generate_slides(),
         is_demo_mode: false,
       });
     } catch (err) {
@@ -47,12 +47,14 @@ export const useData_store = create<UseData_store>((set, get) => ({
 
       set(new_state);
       set({
-        slides: generate_slides(new_state.slideshow_backgrounds),
+        slides: generate_slides(),
         is_demo_mode: true,
       });
     } catch (err) {
       const error_message =
-        err instanceof Error ? `Failed to load demo: ${err.message}` : "Demo data could not be loaded. Please try uploading your own data.";
+        err instanceof Error
+          ? `Failed to load demo: ${err.message}`
+          : "Demo data could not be loaded. Please try uploading your own data.";
       set({ ...initial_state, error: error_message });
     }
   },

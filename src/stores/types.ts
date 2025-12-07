@@ -1,3 +1,4 @@
+import { Watch_Stats } from "@/stores/calculate_watch_stats";
 import {
   Ads_And_Data,
   App_Settings,
@@ -7,19 +8,18 @@ import {
   Location_Review,
   Post,
   Profile,
-  Tiktok_Live,
   TikTok_Shop,
+  Tiktok_Live,
   Your_Activity,
 } from "@/types/TikTok_Data_Schema";
-import { Watch_Stats } from "@/stores/calculate_watch_stats";
 import React from "react";
 
 export type View_State = "upload" | "slideshow" | "complete" | "dashboard";
 
 export type Slide = {
   id: string;
-  bg_image: string;
   content: React.ReactNode;
+  background: React.ReactNode;
 };
 
 export type Data_Section_Key =
@@ -74,7 +74,6 @@ export type App_State = {
   error: string | null;
   view_state: View_State;
   is_loading: boolean;
-  slideshow_backgrounds: string[];
   is_demo_mode: boolean;
 };
 
