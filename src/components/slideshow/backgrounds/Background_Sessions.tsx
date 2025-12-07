@@ -25,6 +25,8 @@ type Cluster = {
 
 export function Background_Sessions() {
   const canvas_ref = useRef<HTMLCanvasElement>(null);
+  const animation_frame_ref = useRef<number>(0);
+  const frame_count_ref = useRef<number>(0);
 
   useEffect(() => {
     const canvas = canvas_ref.current;
@@ -35,10 +37,13 @@ export function Background_Sessions() {
 
     const nodes: Node[] = [];
     const clusters: Cluster[] = [];
-    let animation_frame: number;
-    let frame_count = 0;
-
     const cluster_colors = ["#FF0080", "#00F2EA", "#FE2C55", "#25F4EE", "#FFD700", "#9D4EDD"];
+
+    const resize_canvas = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      initialize_clusters();
+    };
 
     const initialize_clusters = () => {
       clusters.length = 0;
@@ -56,13 +61,6 @@ export function Background_Sessions() {
         });
       }
     };
-
-    const resize_canvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initialize_clusters();
-    };
-    resize_canvas();
 
     const create_node = (cluster_index: number): Node => {
       const cluster = clusters[cluster_index];
@@ -82,7 +80,7 @@ export function Background_Sessions() {
       };
     };
 
-    initialize_clusters();
+    resize_canvas();
 
     for (let i = 0; i < 80; i++) {
       const cluster_index = Math.floor(Math.random() * clusters.length);
@@ -117,7 +115,6 @@ export function Background_Sessions() {
         for (let j = i + 1; j < nodes.length; j++) {
           const node_a = nodes[i];
           const node_b = nodes[j];
-
           const dx = node_b.x - node_a.x;
           const dy = node_b.y - node_a.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
@@ -126,13 +123,12 @@ export function Background_Sessions() {
             const opacity = (1 - distance / connection_distance) * 0.3;
             const cluster_a = clusters[node_a.cluster_index];
 
-            if (node_a.cluster_index === node_b.cluster_index) {
-              ctx.strokeStyle = `${cluster_a.color}${Math.floor(opacity * 255)
-                .toString(16)
-                .padStart(2, "0")}`;
-            } else {
-              ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.5})`;
-            }
+            ctx.strokeStyle =
+              node_a.cluster_index === node_b.cluster_index
+                ? `${cluster_a.color}${Math.floor(opacity * 255)
+                    .toString(16)
+                    .padStart(2, "0")}`
+                : `rgba(255,255,255,${opacity * 0.5})`;
 
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -146,7 +142,7 @@ export function Background_Sessions() {
 
     const draw_node = (node: Node) => {
       const cluster = clusters[node.cluster_index];
-      const pulse_factor = Math.sin(frame_count * 0.05 + node.pulse_phase) * 0.4 + 0.6;
+      const pulse_factor = Math.sin(frame_count_ref.current * 0.05 + node.pulse_phase) * 0.4 + 0.6;
       const current_size = node.size * pulse_factor;
 
       const gradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, current_size * 2);
@@ -165,17 +161,11 @@ export function Background_Sessions() {
       ctx.fill();
     };
 
-    const update_clusters = () => {
-      clusters.forEach((cluster) => {
-        cluster.pulse += cluster.pulse_speed;
-      });
-    };
+    const update_clusters = () => clusters.forEach((c) => (c.pulse += c.pulse_speed));
 
     const update_nodes = () => {
       nodes.forEach((node) => {
-        if (Math.random() < 0.005) {
-          node.cluster_index = Math.floor(Math.random() * clusters.length);
-        }
+        if (Math.random() < 0.005) node.cluster_index = Math.floor(Math.random() * clusters.length);
 
         const target_cluster = clusters[node.cluster_index];
         const angle = Math.random() * Math.PI * 2;
@@ -188,57 +178,53 @@ export function Background_Sessions() {
 
         node.vx += dx * 0.001;
         node.vy += dy * 0.001;
-
         node.vx *= 0.95;
         node.vy *= 0.95;
-
         node.x += node.vx;
         node.y += node.vy;
 
-        for (let i = 0; i < nodes.length; i++) {
-          const other = nodes[i];
-          if (other === node) continue;
-
+        nodes.forEach((other) => {
+          if (other === node) return;
           const dx = other.x - node.x;
           const dy = other.y - node.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 20 && distance > 0) {
+          if (distance > 0 && distance < 20) {
             const force = (20 - distance) / 20;
             node.vx -= (dx / distance) * force * 0.1;
             node.vy -= (dy / distance) * force * 0.1;
           }
-        }
+        });
       });
     };
 
     const animate = () => {
+      frame_count_ref.current++;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      frame_count++;
 
       update_clusters();
       update_nodes();
-
       clusters.forEach(draw_cluster);
       draw_connections();
       nodes.forEach(draw_node);
 
-      animation_frame = requestAnimationFrame(animate);
+      animation_frame_ref.current = requestAnimationFrame(animate);
     };
 
-    animation_frame = requestAnimationFrame(animate);
+    animate();
     window.addEventListener("resize", resize_canvas);
 
     return () => {
-      cancelAnimationFrame(animation_frame);
       window.removeEventListener("resize", resize_canvas);
+      if (animation_frame_ref.current) cancelAnimationFrame(animation_frame_ref.current);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvas_ref}
-      className="fixed inset-0 -z-10 bg-gradient-to-br from-gray-900 via-slate-900 to-black"
-    />
+    <div className="relative h-full w-full overflow-hidden">
+      <canvas
+        ref={canvas_ref}
+        className="absolute inset-0 h-full w-full bg-gradient-to-br from-gray-900 via-slate-900 to-black"
+      />
+    </div>
   );
 }
