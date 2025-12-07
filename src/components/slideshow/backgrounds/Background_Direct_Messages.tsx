@@ -1,5 +1,6 @@
 "use client";
 
+import { useData_store } from "@/stores/useData_store";
 import React, { useEffect, useRef } from "react";
 
 type Message_Path = {
@@ -25,6 +26,7 @@ type Message_Dot = {
 
 export function Background_Direct_Messages() {
   const canvas_ref = useRef<HTMLCanvasElement>(null);
+  const is_exporting = useData_store((state) => state.is_exporting);
 
   useEffect(() => {
     const canvas = canvas_ref.current;
@@ -42,18 +44,9 @@ export function Background_Direct_Messages() {
     const message_paths: Message_Path[] = [];
     const message_dots: Message_Dot[] = [];
     let animation_frame: number;
-    let frame_count = 0;
+    let frame_count = is_exporting ? 100 : 0;
 
-    const colors = [
-      "#FF6B9D",
-      "#4ECDC4",
-      "#45B7D1",
-      "#A29BFE",
-      "#74B9FF",
-      "#55E6C1",
-      "#FD79A8",
-      "#F8B500",
-    ];
+    const colors = ["#FF6B9D", "#4ECDC4", "#45B7D1", "#A29BFE", "#74B9FF", "#55E6C1", "#FD79A8", "#F8B500"];
 
     const initialize_dots = () => {
       message_dots.length = 0;
@@ -92,13 +85,15 @@ export function Background_Direct_Messages() {
       const left_dots = message_dots.filter((d) => d.side === "left");
       const right_dots = message_dots.filter((d) => d.side === "right");
 
-      const start_dot = start_side === "left"
-        ? left_dots[Math.floor(Math.random() * left_dots.length)]
-        : right_dots[Math.floor(Math.random() * right_dots.length)];
+      const start_dot =
+        start_side === "left"
+          ? left_dots[Math.floor(Math.random() * left_dots.length)]
+          : right_dots[Math.floor(Math.random() * right_dots.length)];
 
-      const end_dot = start_side === "left"
-        ? right_dots[Math.floor(Math.random() * right_dots.length)]
-        : left_dots[Math.floor(Math.random() * left_dots.length)];
+      const end_dot =
+        start_side === "left"
+          ? right_dots[Math.floor(Math.random() * right_dots.length)]
+          : left_dots[Math.floor(Math.random() * left_dots.length)];
 
       const points: { x: number; y: number }[] = [];
       const num_control_points = 3 + Math.floor(Math.random() * 3);
@@ -138,7 +133,7 @@ export function Background_Direct_Messages() {
 
       const segment_count = points.length - 1;
       const segment_index = Math.min(Math.floor(t * segment_count), segment_count - 1);
-      const segment_t = (t * segment_count) - segment_index;
+      const segment_t = t * segment_count - segment_index;
 
       const p0 = points[segment_index];
       const p1 = points[segment_index + 1];
@@ -205,14 +200,7 @@ export function Background_Direct_Messages() {
       if (draw_length < 1) {
         const head_point = get_point_on_curve(path.points, draw_length);
 
-        const gradient = ctx.createRadialGradient(
-          head_point.x,
-          head_point.y,
-          0,
-          head_point.x,
-          head_point.y,
-          8
-        );
+        const gradient = ctx.createRadialGradient(head_point.x, head_point.y, 0, head_point.x, head_point.y, 8);
         gradient.addColorStop(0, path.color);
         gradient.addColorStop(1, `${path.color}00`);
 
@@ -236,6 +224,15 @@ export function Background_Direct_Messages() {
 
       return true;
     };
+
+    if (is_exporting) {
+      for (let i = 0; i < 4; i++) {
+        const path = create_message_path();
+        path.progress = 0.2 + Math.random() * 0.6;
+        path.lifetime = Math.floor(Math.random() * 100);
+        message_paths.push(path);
+      }
+    }
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -266,12 +263,12 @@ export function Background_Direct_Messages() {
       cancelAnimationFrame(animation_frame);
       window.removeEventListener("resize", resize_canvas);
     };
-  }, []);
+  }, [is_exporting]);
 
   return (
     <canvas
       ref={canvas_ref}
-      className="fixed inset-0 -z-10 bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950"
+      className="absolute inset-0 bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950"
     />
   );
 }
