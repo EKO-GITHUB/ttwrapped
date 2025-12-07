@@ -1,5 +1,6 @@
 "use client";
 
+import { useData_store } from "@/stores/useData_store";
 import React, { useEffect, useRef } from "react";
 
 type Share_Burst = {
@@ -31,6 +32,7 @@ type Share_Arrow = {
 
 export function Background_Shares() {
   const canvas_ref = useRef<HTMLCanvasElement>(null);
+  const is_exporting = useData_store((state) => state.is_exporting);
 
   useEffect(() => {
     const canvas = canvas_ref.current;
@@ -48,7 +50,7 @@ export function Background_Shares() {
     const share_bursts: Share_Burst[] = [];
     const share_arrows: Share_Arrow[] = [];
     let animation_frame: number;
-    let frame_count = 0;
+    let frame_count = is_exporting ? 100 : 0;
 
     const colors = [
       "#FF6B9D",
@@ -66,8 +68,8 @@ export function Background_Shares() {
     const create_share_burst = (x?: number, y?: number): Share_Burst => {
       const padding = 100;
       return {
-        x: x ?? (padding + Math.random() * (canvas.width - padding * 2)),
-        y: y ?? (padding + Math.random() * (canvas.height - padding * 2)),
+        x: x ?? padding + Math.random() * (canvas.width - padding * 2),
+        y: y ?? padding + Math.random() * (canvas.height - padding * 2),
         rings: [],
         color: colors[Math.floor(Math.random() * colors.length)],
         next_ring_time: 0,
@@ -106,6 +108,28 @@ export function Background_Shares() {
     };
 
     initialize_bursts();
+
+    if (is_exporting) {
+      share_bursts.forEach((burst) => {
+        const ring_count = Math.floor(Math.random() * 3);
+        for (let i = 0; i < ring_count; i++) {
+          burst.rings.push({
+            radius: Math.random() * 150,
+            opacity: Math.random() * 0.8,
+            max_radius: 100 + Math.random() * 100,
+            speed: 1.5 + Math.random() * 1,
+          });
+        }
+        burst.next_ring_time = frame_count + Math.random() * 60;
+      });
+
+      for (let i = 0; i < 5; i++) {
+        const burst = share_bursts[Math.floor(Math.random() * share_bursts.length)];
+        const arrow = create_share_arrow(burst);
+        arrow.distance = Math.random() * arrow.max_distance * 0.8;
+        share_arrows.push(arrow);
+      }
+    }
 
     const draw_share_ring = (ring: Share_Ring, x: number, y: number, color: string) => {
       ctx.save();
@@ -265,12 +289,12 @@ export function Background_Shares() {
       cancelAnimationFrame(animation_frame);
       window.removeEventListener("resize", resize_canvas);
     };
-  }, []);
+  }, [is_exporting]);
 
   return (
     <canvas
       ref={canvas_ref}
-      className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-indigo-950 to-blue-950"
+      className="absolute inset-0 bg-gradient-to-br from-purple-950 via-indigo-950 to-blue-950"
     />
   );
 }
