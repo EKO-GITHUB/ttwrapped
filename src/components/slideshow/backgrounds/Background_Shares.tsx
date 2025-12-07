@@ -64,9 +64,10 @@ export function Background_Shares() {
     ];
 
     const create_share_burst = (x?: number, y?: number): Share_Burst => {
+      const padding = 100;
       return {
-        x: x ?? Math.random() * canvas.width,
-        y: y ?? Math.random() * canvas.height,
+        x: x ?? (padding + Math.random() * (canvas.width - padding * 2)),
+        y: y ?? (padding + Math.random() * (canvas.height - padding * 2)),
         rings: [],
         color: colors[Math.floor(Math.random() * colors.length)],
         next_ring_time: 0,
@@ -88,9 +89,23 @@ export function Background_Shares() {
       };
     };
 
-    for (let i = 0; i < 6; i++) {
-      share_bursts.push(create_share_burst());
-    }
+    const initialize_bursts = () => {
+      const padding = 100;
+      const cols = 4;
+      const rows = 2;
+      const spacing_x = (canvas.width - padding * 2) / cols;
+      const spacing_y = (canvas.height - padding * 2) / rows;
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const x = padding + spacing_x * col + spacing_x / 2 + (Math.random() - 0.5) * spacing_x * 0.3;
+          const y = padding + spacing_y * row + spacing_y / 2 + (Math.random() - 0.5) * spacing_y * 0.3;
+          share_bursts.push(create_share_burst(x, y));
+        }
+      }
+    };
+
+    initialize_bursts();
 
     const draw_share_ring = (ring: Share_Ring, x: number, y: number, color: string) => {
       ctx.save();
@@ -149,7 +164,7 @@ export function Background_Shares() {
     };
 
     const draw_burst_center = (burst: Share_Burst) => {
-      const pulse = Math.sin(frame_count * 0.05) * 0.3 + 0.7;
+      const pulse = Math.sin(frame_count * 0.02) * 0.3 + 0.7;
       const radius = 8 * pulse;
 
       const gradient = ctx.createRadialGradient(burst.x, burst.y, 0, burst.x, burst.y, radius * 2);
@@ -184,8 +199,8 @@ export function Background_Shares() {
         });
         burst.next_ring_time = frame_count + 30 + Math.random() * 30;
 
-        if (Math.random() > 0.7) {
-          for (let i = 0; i < 3; i++) {
+        if (Math.random() > 0.85) {
+          for (let i = 0; i < 2; i++) {
             share_arrows.push(create_share_arrow(burst));
           }
         }
