@@ -24,7 +24,7 @@ export function useCanvasAnimation(draw: (ctx: CanvasRenderingContext2D, frameCo
 
     const animate = () => {
       frameCountRef.current++;
-      timeRef.current += 0.016; // ~60fps
+      timeRef.current += 0.016;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       draw(ctx, frameCountRef.current, timeRef.current);
