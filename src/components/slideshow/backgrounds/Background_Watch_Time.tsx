@@ -21,6 +21,7 @@ type Clock_Hand = {
   rotation_speed: number;
   size: number;
   opacity: number;
+  has_face: boolean;
 };
 
 export function Background_Watch_Time() {
@@ -63,9 +64,10 @@ export function Background_Watch_Time() {
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         angle: Math.random() * Math.PI * 2,
-        rotation_speed: (Math.random() - 0.5) * 0.01,
-        size: Math.random() * 30 + 20,
-        opacity: Math.random() * 0.15 + 0.05,
+        rotation_speed: (Math.random() - 0.5) * 0.015,
+        size: Math.random() * 50 + 40,
+        opacity: Math.random() * 0.25 + 0.15,
+        has_face: Math.random() > 0.5,
       };
     };
 
@@ -73,7 +75,7 @@ export function Background_Watch_Time() {
       orbs.push(create_orb());
     }
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       clock_hands.push(create_clock_hand());
     }
 
@@ -120,21 +122,61 @@ export function Background_Watch_Time() {
       ctx.save();
       ctx.globalAlpha = hand.opacity;
       ctx.translate(hand.x, hand.y);
+
+      if (hand.has_face) {
+        ctx.strokeStyle = "rgba(100, 200, 255, 0.3)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, hand.size * 1.2, 0, Math.PI * 2);
+        ctx.stroke();
+
+        for (let i = 0; i < 12; i++) {
+          const tick_angle = (i * Math.PI) / 6;
+          const tick_start = hand.size * 1.05;
+          const tick_end = hand.size * 1.15;
+
+          ctx.beginPath();
+          ctx.moveTo(Math.cos(tick_angle) * tick_start, Math.sin(tick_angle) * tick_start);
+          ctx.lineTo(Math.cos(tick_angle) * tick_end, Math.sin(tick_angle) * tick_end);
+          ctx.strokeStyle = "rgba(100, 200, 255, 0.4)";
+          ctx.lineWidth = i % 3 === 0 ? 3 : 1.5;
+          ctx.stroke();
+        }
+      }
+
       ctx.rotate(hand.angle);
 
-      ctx.strokeStyle = "rgba(100, 200, 255, 0.6)";
-      ctx.lineWidth = 2;
+      const gradient = ctx.createLinearGradient(0, 0, hand.size * 0.7, 0);
+      gradient.addColorStop(0, "rgba(100, 200, 255, 0.9)");
+      gradient.addColorStop(1, "rgba(100, 200, 255, 0.3)");
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = 3;
       ctx.lineCap = "round";
 
       ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(hand.size, 0);
+      ctx.moveTo(-hand.size * 0.15, 0);
+      ctx.lineTo(hand.size * 0.7, 0);
       ctx.stroke();
 
+      ctx.rotate(hand.angle * 0.1 + Math.PI / 2);
+
+      ctx.strokeStyle = "rgba(255, 150, 100, 0.7)";
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(0, 0, 3, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(100, 200, 255, 0.8)";
+      ctx.moveTo(-hand.size * 0.1, 0);
+      ctx.lineTo(hand.size * 0.5, 0);
+      ctx.stroke();
+
+      ctx.rotate(-hand.angle * 0.1 - Math.PI / 2);
+      ctx.rotate(-hand.angle);
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 5, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(100, 200, 255, 0.9)";
       ctx.fill();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
 
       ctx.restore();
     };
