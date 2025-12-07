@@ -28,6 +28,6 @@ export const initial_state: App_State = {
   error: null,
   view_state: "upload",
   is_loading: false,
-  slideshow_backgrounds: [],
   is_demo_mode: false,
+  is_exporting: false,
 };

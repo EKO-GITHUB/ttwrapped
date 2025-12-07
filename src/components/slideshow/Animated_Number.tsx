@@ -1,8 +1,8 @@
 "use client";
 
+import { useData_store } from "@/stores/useData_store";
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import { useEffect } from "react";
-import { useExport } from "@/contexts/ExportContext";
 
 export function Animated_Number({
   value,
@@ -15,7 +15,7 @@ export function Animated_Number({
   duration?: number;
   format?: (value: number) => string;
 }) {
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
   const motion_value = useMotionValue(is_exporting ? value : 0);
   const rounded = useTransform(motion_value, (latest) => {
     return format ? format(Math.round(latest)) : Math.round(latest).toLocaleString();

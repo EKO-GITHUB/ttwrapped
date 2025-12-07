@@ -75,6 +75,7 @@ export type App_State = {
   view_state: View_State;
   is_loading: boolean;
   is_demo_mode: boolean;
+  is_exporting: boolean;
 };
 
 export type App_Actions = {
@@ -90,6 +91,7 @@ export type App_Actions = {
   reset: () => void;
   get_is_all_valid: () => boolean;
   get_validation_summary: () => { valid_count: number; invalid_count: number; total: number };
+  set_is_exporting: (is_exporting: boolean) => void;
 };
 
 export type UseData_store = App_State & App_Actions;

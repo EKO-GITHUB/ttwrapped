@@ -88,6 +88,8 @@ export const useData_store = create<UseData_store>((set, get) => ({
       total,
     };
   },
+
+  set_is_exporting: (is_exporting) => set({ is_exporting }),
 }));
 
 export type { Data_Section_Key, All_Stats } from "./types";

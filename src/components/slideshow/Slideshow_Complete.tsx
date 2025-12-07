@@ -136,6 +136,8 @@ function convert_to_rgb(color_value: string): string | null {
 }
 
 async function export_slide_as_image(slide: Slide, index: number) {
+  const { createRoot } = await import("react-dom/client");
+
   const MAX_WIDTH = 1080 / 2.5;
   const MAX_HEIGHT = 1920 / 2.5;
 
@@ -155,12 +157,14 @@ async function export_slide_as_image(slide: Slide, index: number) {
   slide_wrapper.style.flexDirection = "column";
   slide_wrapper.style.backgroundColor = "black";
 
-  const background = document.createElement("div");
-  background.style.position = "absolute";
-  background.style.inset = "0";
-  background.style.backgroundSize = "cover";
-  background.style.backgroundPosition = "center";
-  background.style.opacity = "0.6";
+  const background_wrapper = document.createElement("div");
+  background_wrapper.style.position = "absolute";
+  background_wrapper.style.inset = "0";
+  background_wrapper.style.backgroundSize = "cover";
+  background_wrapper.style.backgroundPosition = "center";
+  slide_wrapper.appendChild(background_wrapper);
+  const root_background = createRoot(background_wrapper);
+  root_background.render(slide.background);
 
   const content_wrapper = document.createElement("div");
   content_wrapper.style.position = "relative";
@@ -174,15 +178,11 @@ async function export_slide_as_image(slide: Slide, index: number) {
   content_wrapper.style.textAlign = "center";
   content_wrapper.style.color = "white";
 
-  slide_wrapper.appendChild(background);
   slide_wrapper.appendChild(content_wrapper);
   container.appendChild(slide_wrapper);
   document.body.appendChild(container);
-
-  const { createRoot } = await import("react-dom/client");
-  const { ExportProvider } = await import("@/contexts/ExportContext");
-  const root = createRoot(content_wrapper);
-  root.render(<ExportProvider is_exporting={true}>{slide.content}</ExportProvider>);
+  const root_content = createRoot(content_wrapper);
+  root_content.render(slide.content);
 
   await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -215,7 +215,7 @@ async function export_slide_as_image(slide: Slide, index: number) {
 
     URL.revokeObjectURL(url);
   } finally {
-    root.unmount();
+    root_content.unmount();
     document.body.removeChild(container);
   }
 }
