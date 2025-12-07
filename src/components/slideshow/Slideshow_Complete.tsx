@@ -1,8 +1,7 @@
 "use client";
 
-import type { Slide } from "@/stores/types";
+import { export_slide_as_image } from "@/components/slideshow/export_slide_as_image";
 import { useData_store } from "@/stores/useData_store";
-import html2canvas from "html2canvas-pro";
 import { BarChart3, Download, RotateCcw, Upload } from "lucide-react";
 import { useState } from "react";
 
@@ -15,23 +14,30 @@ export default function Slideshow_Complete() {
   const reset = useData_store((state) => state.reset);
   const is_demo_mode = useData_store((state) => state.is_demo_mode);
   const slides = useData_store((state) => state.slides);
+  const set_is_exporting = useData_store((state) => state.set_is_exporting);
 
   const handle_download = async () => {
     if (!slides || slides.length === 0) return;
 
     set_is_downloading(true);
     set_download_progress(0);
+    set_is_exporting(true);
 
     const slides_to_export = slides.filter((slide) => slide.id !== "complete");
 
-    for (let i = 0; i < slides_to_export.length; i++) {
-      const slide = slides_to_export[i];
-      await export_slide_as_image(slide, i + 1);
-      set_download_progress(((i + 1) / slides_to_export.length) * 100);
+    try {
+      for (let i = 0; i < slides_to_export.length; i++) {
+        const slide = slides_to_export[i];
+        await export_slide_as_image(slide, i + 1);
+        set_download_progress(((i + 1) / slides_to_export.length) * 100);
+      }
+    } catch (error) {
+      console.error("Export failed:", error);
+    } finally {
+      set_is_exporting(false);
+      set_is_downloading(false);
+      set_download_progress(0);
     }
-
-    set_is_downloading(false);
-    set_download_progress(0);
   };
 
   return (
@@ -91,130 +97,4 @@ export default function Slideshow_Complete() {
       </div>
     </div>
   );
-}
-
-function convert_lab_colors_to_rgb(element: HTMLElement) {
-  const all_elements = element.querySelectorAll("*");
-  all_elements.forEach((el) => {
-    if (el instanceof HTMLElement) {
-      const computed = window.getComputedStyle(el);
-      const properties_to_check = [
-        "color",
-        "backgroundColor",
-        "borderColor",
-        "borderTopColor",
-        "borderRightColor",
-        "borderBottomColor",
-        "borderLeftColor",
-        "outlineColor",
-      ];
-
-      properties_to_check.forEach((prop) => {
-        const value = computed.getPropertyValue(prop);
-        if (value && (value.includes("lab(") || value.includes("oklch(") || value.includes("lch("))) {
-          const rgb_value = convert_to_rgb(value);
-          if (rgb_value) {
-            el.style = rgb_value;
-          }
-        }
-      });
-    }
-  });
-}
-
-function convert_to_rgb(color_value: string): string | null {
-  try {
-    const temp_element = document.createElement("div");
-    temp_element.style.color = color_value;
-    document.body.appendChild(temp_element);
-    const computed_color = window.getComputedStyle(temp_element).color;
-    document.body.removeChild(temp_element);
-    return computed_color || null;
-  } catch {
-    return null;
-  }
-}
-
-async function export_slide_as_image(slide: Slide, index: number) {
-  const { createRoot } = await import("react-dom/client");
-
-  const MAX_WIDTH = 1080 / 2.5;
-  const MAX_HEIGHT = 1920 / 2.5;
-
-  const container = document.createElement("div");
-  container.style.position = "fixed";
-  container.style.top = "-10000px";
-  container.style.left = "-10000px";
-  container.style.width = `${MAX_WIDTH}px`;
-  container.style.height = `${MAX_HEIGHT}px`;
-  container.style.overflow = "hidden";
-
-  const background_wrapper = document.createElement("div");
-  background_wrapper.style.position = "absolute";
-  background_wrapper.style.inset = "0";
-  background_wrapper.style.backgroundSize = "cover";
-  background_wrapper.style.backgroundPosition = "center";
-  container.appendChild(background_wrapper);
-
-  const slide_wrapper = document.createElement("div");
-  slide_wrapper.style.position = "relative";
-  slide_wrapper.style.width = "100%";
-  slide_wrapper.style.height = "100%";
-  slide_wrapper.style.display = "flex";
-  slide_wrapper.style.flexDirection = "column";
-  slide_wrapper.style.backgroundColor = "black";
-
-  const content_wrapper = document.createElement("div");
-  content_wrapper.style.position = "relative";
-  content_wrapper.style.zIndex = "10";
-  content_wrapper.style.display = "flex";
-  content_wrapper.style.flex = "1";
-  content_wrapper.style.flexDirection = "column";
-  content_wrapper.style.alignItems = "center";
-  content_wrapper.style.justifyContent = "center";
-  content_wrapper.style.padding = "24px";
-  content_wrapper.style.textAlign = "center";
-  content_wrapper.style.color = "white";
-
-  slide_wrapper.appendChild(content_wrapper);
-  container.appendChild(slide_wrapper);
-  document.body.appendChild(container);
-  const root_content = createRoot(container);
-  root_content.render(slide.background);
-  root_content.render(slide.content);
-
-  await new Promise((resolve) => setTimeout(resolve, 100));
-
-  convert_lab_colors_to_rgb(container);
-
-  try {
-    const canvas = await html2canvas(container, {
-      scale: 1,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: "#000000",
-      logging: false,
-      onclone: (cloned_document) => {
-        const cloned_container = cloned_document.body.querySelector("div");
-        if (cloned_container && cloned_container instanceof HTMLElement) {
-          cloned_container.style.fontFamily = "TikTok Sans, system-ui, sans-serif";
-        }
-      },
-    });
-
-    const blob = await new Promise<Blob>((resolve) => {
-      canvas.toBlob((blob) => resolve(blob!), "image/png", 1.0);
-    });
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `ttwrapped-${String(index).padStart(2, "0")}-${slide.id}.png`;
-    link.click();
-
-    URL.revokeObjectURL(url);
-  } finally {
-    root_content.unmount();
-    document.body.removeChild(container);
-  }
 }
