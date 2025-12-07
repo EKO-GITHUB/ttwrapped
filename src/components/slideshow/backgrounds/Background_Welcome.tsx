@@ -21,7 +21,7 @@ export function Background_Welcome() {
           }}
         />
       ) : (
-        <div className="bg-white bg-[radial-gradient(#000000_1.5px,transparent_1.5px)] [background-size:20px_20px]" />
+        <div className="absolute inset-0 bg-white bg-[radial-gradient(#000000_1.5px,transparent_1.5px)] [background-size:20px_20px]" />
       )}
 
       <Background_Panel className={"bg-slate-800"} />
