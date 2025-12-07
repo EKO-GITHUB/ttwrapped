@@ -1,14 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { format_number } from "@/components/slideshow/format_number";
 import { Animated_Number } from "@/components/slideshow/Animated_Number";
+import { format_number } from "@/components/slideshow/format_number";
 import { useData_store } from "@/stores/useData_store";
-import { useExport } from "@/contexts/ExportContext";
+import { motion } from "framer-motion";
 
 export function Slide_Daily_Average() {
   const stats = useData_store((state) => state.stats);
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
   if (!stats) return null;
 
   const videos_per_day = stats.watch.videos_per_day_avg;
@@ -43,7 +42,10 @@ export function Slide_Daily_Average() {
             transition: { duration: 2, repeat: Infinity, repeatDelay: 1 },
           })}
         >
-          <Animated_Number value={Math.round(videos_per_day)} duration={1.8} />
+          <Animated_Number
+            value={Math.round(videos_per_day)}
+            duration={1.8}
+          />
         </motion.span>
       </motion.p>
       <motion.p
@@ -85,7 +87,12 @@ export function Slide_Daily_Average() {
           transition: { duration: 0.5, delay: 2.4, type: "spring", bounce: 0.3 },
         })}
       >
-        ~<Animated_Number value={estimated_completed} duration={1.2} format={format_number} />
+        ~
+        <Animated_Number
+          value={estimated_completed}
+          duration={1.2}
+          format={format_number}
+        />
       </motion.p>
       <motion.p
         className="mt-1 text-base opacity-70"

@@ -1,14 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { format_number } from "@/components/slideshow/format_number";
 import { Animated_Number } from "@/components/slideshow/Animated_Number";
+import { format_number } from "@/components/slideshow/format_number";
 import { useData_store } from "@/stores/useData_store";
-import { useExport } from "@/contexts/ExportContext";
+import { motion } from "framer-motion";
 
 export function Slide_Shares() {
   const stats = useData_store((state) => state.stats);
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
   if (!stats) return null;
 
   const share_count = stats.share_count;
@@ -39,7 +38,11 @@ export function Slide_Shares() {
             transition: { duration: 2, repeat: Infinity, repeatDelay: 1 },
           })}
         >
-          <Animated_Number value={share_count} duration={1.8} format={format_number} />
+          <Animated_Number
+            value={share_count}
+            duration={1.8}
+            format={format_number}
+          />
         </motion.span>
       </motion.p>
       <motion.p

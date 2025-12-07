@@ -6,11 +6,10 @@ import { get_skill_you_could_have_learned } from "@/components/slideshow/slides/
 import { useData_store } from "@/stores/useData_store";
 import { motion } from "framer-motion";
 import { Clock } from "lucide-react";
-import { useExport } from "@/contexts/ExportContext";
 
 export function Slide_Watch_Time() {
   const stats = useData_store((state) => state.stats);
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
   if (!stats) return null;
 
   const hours = stats.watch.total_watch_time_hours;
@@ -44,9 +43,17 @@ export function Slide_Watch_Time() {
           })}
         >
           <div className={"flex items-center justify-center gap-2"}>
-            <Animated_Number value={minutes} duration={1.8} format={format_number} />
+            <Animated_Number
+              value={minutes}
+              duration={1.8}
+              format={format_number}
+            />
             <span>min</span>
-            <Clock size={20} color={"cyan"} strokeWidth={2.5} />
+            <Clock
+              size={20}
+              color={"cyan"}
+              strokeWidth={2.5}
+            />
           </div>
         </motion.span>
       </motion.div>

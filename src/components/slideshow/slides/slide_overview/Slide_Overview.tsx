@@ -2,7 +2,6 @@
 
 import { format_number } from "@/components/slideshow/format_number";
 import { get_profile_definition } from "@/components/slideshow/slides/slide_overview/get_profile_definition";
-import { useExport } from "@/contexts/ExportContext";
 import { calculate_user_profile } from "@/stores/calculate_user_profile";
 import { useData_store } from "@/stores/useData_store";
 import { motion } from "framer-motion";
@@ -13,7 +12,7 @@ export function Slide_Overview() {
   const stats = useData_store((state) => state.stats);
   const profile = useData_store((state) => state.profile);
   const post = useData_store((state) => state.post);
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
 
   if (!stats || !profile) return null;
 

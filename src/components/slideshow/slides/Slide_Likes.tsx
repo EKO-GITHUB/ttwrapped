@@ -5,11 +5,10 @@ import { format_number } from "@/components/slideshow/format_number";
 import { useData_store } from "@/stores/useData_store";
 import { motion } from "framer-motion";
 import { Bookmark, HeartIcon } from "lucide-react";
-import { useExport } from "@/contexts/ExportContext";
 
 export function Slide_Likes() {
   const stats = useData_store((state) => state.stats);
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
   if (!stats) return null;
 
   const like_count = stats.like_count;
@@ -42,8 +41,16 @@ export function Slide_Likes() {
           })}
         >
           <div className={"flex items-center justify-center gap-1"}>
-            <Animated_Number value={like_count} duration={1.8} format={format_number} />
-            <HeartIcon size={40} color={"red"} fill={"red"} />
+            <Animated_Number
+              value={like_count}
+              duration={1.8}
+              format={format_number}
+            />
+            <HeartIcon
+              size={40}
+              color={"red"}
+              fill={"red"}
+            />
           </div>
         </motion.span>
       </motion.div>
@@ -77,8 +84,16 @@ export function Slide_Likes() {
         })}
       >
         <div className={"flex items-center justify-center gap-1"}>
-          <Animated_Number value={favorite_count} duration={1.2} format={format_number} />
-          <Bookmark size={30} color={"gold"} fill={"gold"} />
+          <Animated_Number
+            value={favorite_count}
+            duration={1.2}
+            format={format_number}
+          />
+          <Bookmark
+            size={30}
+            color={"gold"}
+            fill={"gold"}
+          />
         </div>
       </motion.div>
       <motion.p

@@ -4,11 +4,10 @@ import { Animated_Number } from "@/components/slideshow/Animated_Number";
 import { format_number } from "@/components/slideshow/format_number";
 import { useData_store } from "@/stores/useData_store";
 import { motion } from "framer-motion";
-import { useExport } from "@/contexts/ExportContext";
 
 export function Slide_Sessions() {
   const stats = useData_store((state) => state.stats);
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
   if (!stats) return null;
 
   const count = stats.watch.session_count;
@@ -47,7 +46,11 @@ export function Slide_Sessions() {
             transition: { duration: 2, repeat: Infinity, repeatDelay: 1 },
           })}
         >
-          <Animated_Number value={count} duration={1.8} format={format_number} />
+          <Animated_Number
+            value={count}
+            duration={1.8}
+            format={format_number}
+          />
         </motion.span>
       </motion.p>
       <motion.p
@@ -58,7 +61,12 @@ export function Slide_Sessions() {
           transition: { duration: 0.5, delay: 1.5 },
         })}
       >
-        ~<Animated_Number value={Math.round(avg_videos)} duration={1.2} /> videos per session
+        ~
+        <Animated_Number
+          value={Math.round(avg_videos)}
+          duration={1.2}
+        />{" "}
+        videos per session
       </motion.p>
       <motion.p
         className="mb-6 text-lg opacity-60"
@@ -68,7 +76,12 @@ export function Slide_Sessions() {
           transition: { duration: 0.5, delay: 1.8 },
         })}
       >
-        ~<Animated_Number value={Math.round(avg_minutes)} duration={1.2} /> min average
+        ~
+        <Animated_Number
+          value={Math.round(avg_minutes)}
+          duration={1.2}
+        />{" "}
+        min average
       </motion.p>
 
       <motion.p
@@ -89,7 +102,10 @@ export function Slide_Sessions() {
           transition: { duration: 0.5, delay: 2.4, type: "spring", bounce: 0.3 },
         })}
       >
-        <Animated_Number value={longest_videos} duration={1.2} />
+        <Animated_Number
+          value={longest_videos}
+          duration={1.2}
+        />
         videos
       </motion.p>
       <motion.p

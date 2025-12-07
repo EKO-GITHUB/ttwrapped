@@ -2,14 +2,13 @@
 
 import { useData_store } from "@/stores/useData_store";
 import { motion } from "framer-motion";
-import { useExport } from "@/contexts/ExportContext";
 
 const one_year_ago = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000);
 const formatted_date = one_year_ago.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" });
 
 export function Slide_Welcome() {
   const profile = useData_store((state) => state.profile);
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
 
   const profile_photo = profile!["Profile Info"].ProfileMap.profilePhoto;
   const username = profile!["Profile Info"].ProfileMap.userName;

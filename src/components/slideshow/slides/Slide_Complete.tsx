@@ -1,10 +1,10 @@
 "use client";
 
+import { useData_store } from "@/stores/useData_store";
 import { motion } from "framer-motion";
-import { useExport } from "@/contexts/ExportContext";
 
 export function Slide_Complete() {
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
 
   return (
     <>

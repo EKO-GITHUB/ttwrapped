@@ -1,16 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { format_number } from "@/components/slideshow/format_number";
 import { Animated_Number } from "@/components/slideshow/Animated_Number";
-import { Comment } from "@/types/TikTok_Data_Schema";
+import { format_number } from "@/components/slideshow/format_number";
 import { useData_store } from "@/stores/useData_store";
-import { useExport } from "@/contexts/ExportContext";
+import { Comment } from "@/types/TikTok_Data_Schema";
+import { motion } from "framer-motion";
 
 export function Slide_Comments() {
   const comment = useData_store((state) => state.comment);
   const stats = useData_store((state) => state.stats);
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
 
   if (!comment || !stats) return null;
 
@@ -43,7 +42,11 @@ export function Slide_Comments() {
             transition: { duration: 2, repeat: Infinity, repeatDelay: 1 },
           })}
         >
-          <Animated_Number value={count} duration={1.8} format={format_number} />
+          <Animated_Number
+            value={count}
+            duration={1.8}
+            format={format_number}
+          />
         </motion.span>
       </motion.p>
       <motion.p
@@ -100,7 +103,13 @@ export function Slide_Comments() {
               transition: { duration: 0.5, delay: 2.8 },
             })}
           >
-            used <Animated_Number value={top_emoji.count} duration={1.2} format={format_number} /> times
+            used{" "}
+            <Animated_Number
+              value={top_emoji.count}
+              duration={1.2}
+              format={format_number}
+            />{" "}
+            times
           </motion.p>
         </motion.div>
       )}

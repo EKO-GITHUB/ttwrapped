@@ -6,11 +6,10 @@ import { get_download_equivalent } from "@/components/slideshow/slides/slide_dow
 import { useData_store } from "@/stores/useData_store";
 import { motion } from "framer-motion";
 import { HardDrive } from "lucide-react";
-import { useExport } from "@/contexts/ExportContext";
 
 export function Slide_Download_Size() {
   const stats = useData_store((state) => state.stats);
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
   if (!stats) return null;
 
   const gb = stats.watch.estimated_download_gb;
@@ -42,8 +41,16 @@ export function Slide_Download_Size() {
           })}
         >
           <div className={"flex items-center justify-center gap-2"}>
-            <Animated_Number value={gb} duration={1.8} format={format_gb} />
-            <HardDrive size={40} color={"#00FF00"} strokeWidth={2} />
+            <Animated_Number
+              value={gb}
+              duration={1.8}
+              format={format_gb}
+            />
+            <HardDrive
+              size={40}
+              color={"#00FF00"}
+              strokeWidth={2}
+            />
           </div>
         </motion.span>
       </motion.div>

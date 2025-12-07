@@ -4,11 +4,10 @@ import { useData_store } from "@/stores/useData_store";
 import { Direct_Message_Item } from "@/types/TikTok_Data_Schema";
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
-import { useExport } from "@/contexts/ExportContext";
 
 export function Slide_Direct_Messages() {
   const direct_message = useData_store((state) => state.direct_message);
-  const { is_exporting } = useExport();
+  const is_exporting = useData_store((state) => state.is_exporting);
 
   const top_friends = get_top_chatted_friends(direct_message!["Direct Messages"].ChatHistory);
 
