@@ -1,5 +1,6 @@
 "use client";
 
+import { useData_store } from "@/stores/useData_store";
 import React, { useEffect, useRef } from "react";
 
 type Speech_Bubble = {
@@ -21,6 +22,7 @@ type Speech_Bubble = {
 
 export function Background_Comments() {
   const canvas_ref = useRef<HTMLCanvasElement>(null);
+  const is_exporting = useData_store((state) => state.is_exporting);
 
   useEffect(() => {
     const canvas = canvas_ref.current;
@@ -37,7 +39,7 @@ export function Background_Comments() {
 
     const speech_bubbles: Speech_Bubble[] = [];
     let animation_frame: number;
-    let frame_count = 0;
+    let frame_count = is_exporting ? 100 : 0;
 
     const colors = [
       "#FF6B9D",
@@ -74,7 +76,12 @@ export function Background_Comments() {
     };
 
     for (let i = 0; i < 12; i++) {
-      speech_bubbles.push(create_speech_bubble());
+      const bubble = create_speech_bubble();
+      if (is_exporting) {
+        bubble.lifetime = Math.floor(Math.random() * 150);
+        bubble.y = Math.random() * canvas.height;
+      }
+      speech_bubbles.push(bubble);
     }
 
     const draw_speech_bubble = (bubble: Speech_Bubble) => {
@@ -196,7 +203,7 @@ export function Background_Comments() {
       cancelAnimationFrame(animation_frame);
       window.removeEventListener("resize", resize_canvas);
     };
-  }, []);
+  }, [is_exporting]);
 
   return (
     <canvas
