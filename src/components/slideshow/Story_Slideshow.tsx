@@ -1,6 +1,5 @@
 "use client";
 
-import { export_slide_as_image } from "@/components/slideshow/export_slide_as_image";
 import { cn } from "@/lib/utils";
 import { useData_store } from "@/stores/useData_store";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -12,10 +11,6 @@ const SLIDE_PAUSE = 1000;
 const SLIDE_PROGRESS_DURATION = 1000 * 5;
 
 export default function Story_Slideshow() {
-  // TODO: REMOVE DEBUG MODE
-  const debug_mode = true;
-  const set_is_exporting = useData_store((state) => state.set_is_exporting);
-
   const [current_index, set_current_index] = useState(0);
   const [is_paused, set_is_paused] = useState(false);
   const [progress, set_progress] = useState(0);
@@ -133,7 +128,7 @@ export default function Story_Slideshow() {
     } else if (x > (width * 2) / 3) {
       go_next();
     } else {
-      set_is_paused((prev) => (debug_mode ? true : !prev));
+      set_is_paused((prev) => prev);
     }
   };
 
@@ -145,21 +140,6 @@ export default function Story_Slideshow() {
         className="relative flex h-full w-full flex-col overflow-hidden"
         onClick={handle_click}
       >
-        {/*TODO: REMOVE THIS*/}
-        {debug_mode && (
-          <div className={"absolute z-50 grid w-full justify-center"}>
-            <button
-              className={"m-12 mx-auto w-max rounded-md bg-black p-4 text-center text-white hover:cursor-pointer"}
-              onClick={async () => {
-                set_is_exporting(true);
-                await export_slide_as_image(current_slide, current_index + 1);
-                set_is_exporting(false);
-              }}
-            >
-              DOWNLOAD
-            </button>
-          </div>
-        )}
         <Animated_Background slide_id={current_slide.id} />
 
         <div className="relative z-10 flex flex-1 flex-col">
