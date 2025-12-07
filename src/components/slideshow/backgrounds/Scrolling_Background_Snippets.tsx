@@ -1,5 +1,6 @@
 "use client";
 
+import { useData_store } from "@/stores/useData_store";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 
@@ -65,6 +66,8 @@ export function Scrolling_Background_Snippets() {
 }
 
 function Scrolling_Column({ index, background_indices, duration }: Scrolling_Column_Props) {
+  const is_exporting = useData_store((state) => state.is_exporting);
+
   const direction = index % 2 === 0 ? -1 : 1;
   const total_height = SNIPPETS_PER_COLUMN * (SNIPPET_HEIGHT + SNIPPET_GAP);
 
@@ -89,23 +92,33 @@ function Scrolling_Column({ index, background_indices, duration }: Scrolling_Col
       className="relative flex-shrink-0"
       style={{ width: "115px" }}
     >
-      <motion.div
-        className="flex flex-col"
-        style={{ gap: `${SNIPPET_GAP}px` }}
-        initial={{ y: 0 }}
-        animate={{
-          y: direction === -1 ? -total_height : total_height,
-        }}
-        transition={{
-          duration: duration,
-          repeat: Infinity,
-          repeatType: "loop",
-          ease: "linear",
-        }}
-      >
-        {background_indices.map((bg_index, i) => render_snippet(bg_index, `a-${i}`))}
-        {background_indices.map((bg_index, i) => render_snippet(bg_index, `b-${i}`))}
-      </motion.div>
+      {!is_exporting ? (
+        <motion.div
+          className="flex flex-col"
+          style={{ gap: `${SNIPPET_GAP}px` }}
+          initial={{ y: 0 }}
+          animate={{
+            y: direction === -1 ? -total_height : total_height,
+          }}
+          transition={{
+            duration: duration,
+            repeat: Infinity,
+            repeatType: "loop",
+            ease: "linear",
+          }}
+        >
+          {background_indices.map((bg_index, i) => render_snippet(bg_index, `a-${i}`))}
+          {background_indices.map((bg_index, i) => render_snippet(bg_index, `b-${i}`))}
+        </motion.div>
+      ) : (
+        <div
+          className="flex flex-col"
+          style={{ gap: `${SNIPPET_GAP}px` }}
+        >
+          {background_indices.map((bg_index, i) => render_snippet(bg_index, `a-${i}`))}
+          {background_indices.map((bg_index, i) => render_snippet(bg_index, `b-${i}`))}
+        </div>
+      )}
     </div>
   );
 }
