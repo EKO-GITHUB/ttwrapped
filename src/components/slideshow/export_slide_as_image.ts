@@ -4,8 +4,8 @@ import type { Slide } from "@/stores/types";
 import html2canvas from "html2canvas-pro";
 import React from "react";
 
-const EXPORT_WIDTH = 1080;
-const EXPORT_HEIGHT = 1920;
+const EXPORT_WIDTH = 1080 / 2.5;
+const EXPORT_HEIGHT = 1920 / 2.5;
 const ANIMATION_SETTLE_TIME = 500;
 const EXPORT_QUALITY = 1.0;
 
