@@ -201,7 +201,7 @@ export function Background_Comments() {
   return (
     <canvas
       ref={canvas_ref}
-      className="fixed inset-0 -z-10 bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900"
+      className="absolute inset-0 bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900"
     />
   );
 }
