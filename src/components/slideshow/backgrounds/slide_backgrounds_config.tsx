@@ -5,6 +5,7 @@ import { Background_Daily_Avg } from "@/components/slideshow/backgrounds/Backgro
 import { Background_Download_Size } from "@/components/slideshow/backgrounds/Background_Download_Size";
 import { Background_Likes } from "@/components/slideshow/backgrounds/Background_Likes";
 import { Background_Sessions } from "@/components/slideshow/backgrounds/Background_Sessions";
+import { Background_Shares } from "@/components/slideshow/backgrounds/Background_Shares";
 import { Background_Videos } from "@/components/slideshow/backgrounds/Background_Videos";
 import { Background_Watch_Time } from "@/components/slideshow/backgrounds/Background_Watch_Time";
 import { Background_Welcome } from "@/components/slideshow/backgrounds/Background_Welcome";
@@ -19,7 +20,7 @@ export const slide_backgrounds_config: Record<string, React.ReactNode> = {
   download_size: <Background_Download_Size />,
   likes: <Background_Likes />,
   comments: <Background_Comments />,
-  shares: <></>,
+  shares: <Background_Shares />,
   direct_messages: <></>,
   overview: <></>,
   complete: <></>,
