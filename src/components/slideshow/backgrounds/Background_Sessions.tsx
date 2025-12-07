@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useCanvasAnimation } from "@/components/slideshow/backgrounds/useCanvasAnimation";
+import React, { useRef } from "react";
 
 type Node = {
   x: number;
@@ -24,71 +25,59 @@ type Cluster = {
 };
 
 export function Background_Sessions() {
-  const canvas_ref = useRef<HTMLCanvasElement>(null);
-  const animation_frame_ref = useRef<number>(0);
+  const nodes_ref = useRef<Node[]>([]);
+  const clusters_ref = useRef<Cluster[]>([]);
   const frame_count_ref = useRef<number>(0);
 
-  useEffect(() => {
-    const canvas = canvas_ref.current;
-    if (!canvas) return;
+  const cluster_colors = ["#FF0080", "#00F2EA", "#FE2C55", "#25F4EE", "#FFD700", "#9D4EDD"];
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const draw = (ctx: CanvasRenderingContext2D) => {
+    const canvas = ctx.canvas;
 
-    const nodes: Node[] = [];
-    const clusters: Cluster[] = [];
-    const cluster_colors = ["#FF0080", "#00F2EA", "#FE2C55", "#25F4EE", "#FFD700", "#9D4EDD"];
-
-    const resize_canvas = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-      initialize_clusters();
-    };
-    window.addEventListener("resize", resize_canvas);
-
-    const initialize_clusters = () => {
-      clusters.length = 0;
+    if (clusters_ref.current.length === 0) {
       const cluster_count = 25;
       const padding = 50;
-
-      for (let i = 0; i < cluster_count; i++) {
-        clusters.push({
-          x: padding + Math.random() * (canvas.width - padding * 2),
-          y: padding + Math.random() * (canvas.height - padding * 2),
-          radius: 80 + Math.random() * 40,
-          color: cluster_colors[i % cluster_colors.length],
-          pulse: 0,
-          pulse_speed: 0.01 + Math.random() * 0.01,
-        });
-      }
-    };
-
-    const create_node = (cluster_index: number): Node => {
-      const cluster = clusters[cluster_index];
-      const angle = Math.random() * Math.PI * 2;
-      const distance = Math.random() * cluster.radius;
-
-      return {
-        x: cluster.x + Math.cos(angle) * distance,
-        y: cluster.y + Math.sin(angle) * distance,
-        vx: 0,
-        vy: 0,
-        size: 3 + Math.random() * 3,
-        target_x: cluster.x,
-        target_y: cluster.y,
-        cluster_index,
-        pulse_phase: Math.random() * Math.PI * 2,
-      };
-    };
-
-    resize_canvas();
-
-    for (let i = 0; i < 80; i++) {
-      const cluster_index = Math.floor(Math.random() * clusters.length);
-      nodes.push(create_node(cluster_index));
+      clusters_ref.current = Array.from({ length: cluster_count }, (_, i) => ({
+        x: padding + Math.random() * (canvas.width - padding * 2),
+        y: padding + Math.random() * (canvas.height - padding * 2),
+        radius: 80 + Math.random() * 40,
+        color: cluster_colors[i % cluster_colors.length],
+        pulse: 0,
+        pulse_speed: 0.01 + Math.random() * 0.01,
+      }));
     }
 
-    const draw_cluster = (cluster: Cluster) => {
+    const clusters = clusters_ref.current;
+
+    if (nodes_ref.current.length === 0) {
+      const create_node = (cluster_index: number): Node => {
+        const cluster = clusters[cluster_index];
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * cluster.radius;
+        return {
+          x: cluster.x + Math.cos(angle) * distance,
+          y: cluster.y + Math.sin(angle) * distance,
+          vx: 0,
+          vy: 0,
+          size: 3 + Math.random() * 3,
+          target_x: cluster.x,
+          target_y: cluster.y,
+          cluster_index,
+          pulse_phase: Math.random() * Math.PI * 2,
+        };
+      };
+
+      nodes_ref.current = Array.from({ length: 80 }, () => {
+        const cluster_index = Math.floor(Math.random() * clusters.length);
+        return create_node(cluster_index);
+      });
+    }
+
+    const nodes = nodes_ref.current;
+    frame_count_ref.current++;
+
+    clusters.forEach((cluster) => {
+      cluster.pulse += cluster.pulse_speed;
       const pulse_factor = Math.sin(cluster.pulse) * 0.3 + 0.7;
       const current_radius = cluster.radius * pulse_factor;
 
@@ -107,41 +96,69 @@ export function Background_Sessions() {
       ctx.beginPath();
       ctx.arc(cluster.x, cluster.y, current_radius * 0.6, 0, Math.PI * 2);
       ctx.stroke();
-    };
+    });
 
-    const draw_connections = () => {
-      const connection_distance = 120;
+    nodes.forEach((node) => {
+      if (Math.random() < 0.005) node.cluster_index = Math.floor(Math.random() * clusters.length);
 
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const node_a = nodes[i];
-          const node_b = nodes[j];
-          const dx = node_b.x - node_a.x;
-          const dy = node_b.y - node_a.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+      const target_cluster = clusters[node.cluster_index];
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * target_cluster.radius * 0.8;
+      node.target_x = target_cluster.x + Math.cos(angle) * distance;
+      node.target_y = target_cluster.y + Math.sin(angle) * distance;
 
-          if (distance < connection_distance) {
-            const opacity = (1 - distance / connection_distance) * 0.3;
-            const cluster_a = clusters[node_a.cluster_index];
+      const dx = node.target_x - node.x;
+      const dy = node.target_y - node.y;
 
-            ctx.strokeStyle =
-              node_a.cluster_index === node_b.cluster_index
-                ? `${cluster_a.color}${Math.floor(opacity * 255)
-                    .toString(16)
-                    .padStart(2, "0")}`
-                : `rgba(255,255,255,${opacity * 0.5})`;
+      node.vx += dx * 0.001;
+      node.vy += dy * 0.001;
+      node.vx *= 0.95;
+      node.vy *= 0.95;
+      node.x += node.vx;
+      node.y += node.vy;
 
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(node_a.x, node_a.y);
-            ctx.lineTo(node_b.x, node_b.y);
-            ctx.stroke();
-          }
+      nodes.forEach((other) => {
+        if (other === node) return;
+        const dx = other.x - node.x;
+        const dy = other.y - node.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance > 0 && distance < 20) {
+          const force = (20 - distance) / 20;
+          node.vx -= (dx / distance) * force * 0.1;
+          node.vy -= (dy / distance) * force * 0.1;
+        }
+      });
+    });
+
+    const connection_distance = 120;
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const node_a = nodes[i];
+        const node_b = nodes[j];
+        const dx = node_b.x - node_a.x;
+        const dy = node_b.y - node_a.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < connection_distance) {
+          const opacity = (1 - distance / connection_distance) * 0.3;
+          const cluster_a = clusters[node_a.cluster_index];
+          ctx.strokeStyle =
+            node_a.cluster_index === node_b.cluster_index
+              ? `${cluster_a.color}${Math.floor(opacity * 255)
+                  .toString(16)
+                  .padStart(2, "0")}`
+              : `rgba(255,255,255,${opacity * 0.5})`;
+
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(node_a.x, node_a.y);
+          ctx.lineTo(node_b.x, node_b.y);
+          ctx.stroke();
         }
       }
-    };
+    }
 
-    const draw_node = (node: Node) => {
+    nodes.forEach((node) => {
       const cluster = clusters[node.cluster_index];
       const pulse_factor = Math.sin(frame_count_ref.current * 0.05 + node.pulse_phase) * 0.4 + 0.6;
       const current_size = node.size * pulse_factor;
@@ -160,70 +177,15 @@ export function Background_Sessions() {
       ctx.beginPath();
       ctx.arc(node.x, node.y, current_size, 0, Math.PI * 2);
       ctx.fill();
-    };
+    });
+  };
 
-    const update_clusters = () => clusters.forEach((c) => (c.pulse += c.pulse_speed));
-
-    const update_nodes = () => {
-      nodes.forEach((node) => {
-        if (Math.random() < 0.005) node.cluster_index = Math.floor(Math.random() * clusters.length);
-
-        const target_cluster = clusters[node.cluster_index];
-        const angle = Math.random() * Math.PI * 2;
-        const distance = Math.random() * target_cluster.radius * 0.8;
-        node.target_x = target_cluster.x + Math.cos(angle) * distance;
-        node.target_y = target_cluster.y + Math.sin(angle) * distance;
-
-        const dx = node.target_x - node.x;
-        const dy = node.target_y - node.y;
-
-        node.vx += dx * 0.001;
-        node.vy += dy * 0.001;
-        node.vx *= 0.95;
-        node.vy *= 0.95;
-        node.x += node.vx;
-        node.y += node.vy;
-
-        nodes.forEach((other) => {
-          if (other === node) return;
-          const dx = other.x - node.x;
-          const dy = other.y - node.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          if (distance > 0 && distance < 20) {
-            const force = (20 - distance) / 20;
-            node.vx -= (dx / distance) * force * 0.1;
-            node.vy -= (dy / distance) * force * 0.1;
-          }
-        });
-      });
-    };
-
-    const animate = () => {
-      frame_count_ref.current++;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      update_clusters();
-      update_nodes();
-      clusters.forEach(draw_cluster);
-      draw_connections();
-      nodes.forEach(draw_node);
-
-      animation_frame_ref.current = requestAnimationFrame(animate);
-    };
-
-    animate();
-    window.addEventListener("resize", resize_canvas);
-
-    return () => {
-      window.removeEventListener("resize", resize_canvas);
-      if (animation_frame_ref.current) cancelAnimationFrame(animation_frame_ref.current);
-    };
-  }, []);
+  const { canvasRef } = useCanvasAnimation(draw);
 
   return (
     <div className="relative h-full w-full overflow-hidden">
       <canvas
-        ref={canvas_ref}
+        ref={canvasRef}
         className="absolute inset-0 h-full w-full bg-gradient-to-br from-gray-900 via-slate-900 to-black"
       />
     </div>
