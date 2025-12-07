@@ -44,6 +44,7 @@ export function Background_Sessions() {
       canvas.height = canvas.offsetHeight;
       initialize_clusters();
     };
+    window.addEventListener("resize", resize_canvas);
 
     const initialize_clusters = () => {
       clusters.length = 0;
