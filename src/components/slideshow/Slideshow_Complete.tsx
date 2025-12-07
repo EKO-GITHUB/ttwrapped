@@ -181,10 +181,11 @@ async function export_slide_as_image(slide: Slide, index: number) {
   document.body.appendChild(container);
 
   const { createRoot } = await import("react-dom/client");
+  const { ExportProvider } = await import("@/contexts/ExportContext");
   const root = createRoot(content_wrapper);
-  root.render(slide.content);
+  root.render(<ExportProvider is_exporting={true}>{slide.content}</ExportProvider>);
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 100));
 
   convert_lab_colors_to_rgb(container);
 

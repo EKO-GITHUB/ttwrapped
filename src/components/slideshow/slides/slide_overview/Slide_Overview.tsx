@@ -7,11 +7,13 @@ import { useData_store } from "@/stores/useData_store";
 import { motion } from "framer-motion";
 import { Clock, Heart, Layers, LucideIcon, MessageCircle, Play, Share2, UserPlus, Users } from "lucide-react";
 import Image from "next/image";
+import { useExport } from "@/contexts/ExportContext";
 
 export function Slide_Overview() {
   const stats = useData_store((state) => state.stats);
   const profile = useData_store((state) => state.profile);
   const post = useData_store((state) => state.post);
+  const { is_exporting } = useExport();
 
   if (!stats || !profile) return null;
 
@@ -44,17 +46,21 @@ export function Slide_Overview() {
     <>
       <motion.p
         className="mb-6 text-lg font-medium opacity-80"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 0.8, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+        {...(!is_exporting && {
+          initial: { opacity: 0, y: -20 },
+          animate: { opacity: 0.8, y: 0 },
+          transition: { duration: 0.5, delay: 0.1 },
+        })}
       >
         Your Year in Review
       </motion.p>
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.3, type: "spring", bounce: 0.4 }}
+        {...(!is_exporting && {
+          initial: { opacity: 0, scale: 0.8 },
+          animate: { opacity: 1, scale: 1 },
+          transition: { duration: 0.5, delay: 0.3, type: "spring", bounce: 0.4 },
+        })}
         className={"grid items-center justify-center justify-items-center"}
       >
         <img
@@ -64,9 +70,11 @@ export function Slide_Overview() {
         />
         <motion.p
           className="mb-2 text-xl font-semibold"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
+          {...(!is_exporting && {
+            initial: { opacity: 0 },
+            animate: { opacity: 1 },
+            transition: { duration: 0.5, delay: 0.5 },
+          })}
         >
           @{username}
         </motion.p>
@@ -76,9 +84,11 @@ export function Slide_Overview() {
         className={
           "mb-4 flex items-center justify-center justify-items-center gap-2 rounded-md border-2 border-white/40 bg-black/60 p-2"
         }
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
+        {...(!is_exporting && {
+          initial: { opacity: 0, y: 20 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.5, delay: 0.7 },
+        })}
       >
         <p className="mb-1">
           {profile_definition.profile_image && (
@@ -94,35 +104,27 @@ export function Slide_Overview() {
       </motion.div>
       <motion.p
         className="mb-4 max-w-md text-sm leading-relaxed opacity-80"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.8 }}
-        transition={{ duration: 0.5, delay: 0.9 }}
+        {...(!is_exporting && {
+          initial: { opacity: 0 },
+          animate: { opacity: 0.8 },
+          transition: { duration: 0.5, delay: 0.9 },
+        })}
       >
         {profile_definition.profile_description}
       </motion.p>
 
       <motion.div
         className="mb-6 flex gap-2"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 1.1 }}
+        {...(!is_exporting && {
+          initial: { opacity: 0, y: 10 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.5, delay: 1.1 },
+        })}
       >
-        <Dimension_Chip
-          label="Consumption"
-          level={profile_metrics.consumption}
-        />
-        <Dimension_Chip
-          label="Engagement"
-          level={profile_metrics.engagement}
-        />
-        <Dimension_Chip
-          label="Sharing"
-          level={profile_metrics.sharing}
-        />
-        <Dimension_Chip
-          label="Creation"
-          level={profile_metrics.creation}
-        />
+        <Dimension_Chip label="Consumption" level={profile_metrics.consumption} />
+        <Dimension_Chip label="Engagement" level={profile_metrics.engagement} />
+        <Dimension_Chip label="Sharing" level={profile_metrics.sharing} />
+        <Dimension_Chip label="Creation" level={profile_metrics.creation} />
       </motion.div>
 
       <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 xl:grid-cols-4">
@@ -132,6 +134,7 @@ export function Slide_Overview() {
           value={Math.round(hours_watched)}
           color="text-cyan-400"
           delay={1.5}
+          is_exporting={is_exporting}
         />
         <Stat_Box
           icon={Play}
@@ -139,6 +142,7 @@ export function Slide_Overview() {
           value={videos_watched}
           color="text-pink-400"
           delay={1.6}
+          is_exporting={is_exporting}
         />
         <Stat_Box
           icon={Layers}
@@ -146,6 +150,7 @@ export function Slide_Overview() {
           value={sessions}
           color="text-purple-400"
           delay={1.7}
+          is_exporting={is_exporting}
         />
         <Stat_Box
           icon={Heart}
@@ -153,6 +158,7 @@ export function Slide_Overview() {
           value={likes}
           color="text-red-400"
           delay={1.8}
+          is_exporting={is_exporting}
         />
         <Stat_Box
           icon={Share2}
@@ -160,6 +166,7 @@ export function Slide_Overview() {
           value={shares}
           color="text-green-400"
           delay={1.9}
+          is_exporting={is_exporting}
         />
         <Stat_Box
           icon={MessageCircle}
@@ -167,6 +174,7 @@ export function Slide_Overview() {
           value={comments}
           color="text-yellow-400"
           delay={2.0}
+          is_exporting={is_exporting}
         />
         <Stat_Box
           icon={Users}
@@ -174,6 +182,7 @@ export function Slide_Overview() {
           value={followers}
           color="text-blue-400"
           delay={2.1}
+          is_exporting={is_exporting}
         />
         <Stat_Box
           icon={UserPlus}
@@ -181,6 +190,7 @@ export function Slide_Overview() {
           value={following}
           color="text-orange-400"
           delay={2.2}
+          is_exporting={is_exporting}
         />
       </div>
     </>
@@ -193,25 +203,29 @@ function Stat_Box({
   value,
   color,
   delay,
+  is_exporting,
 }: {
   icon: LucideIcon;
   label: string;
   value: number;
   color: string;
   delay: number;
+  is_exporting: boolean;
 }) {
   return (
     <motion.div
       className="flex w-full items-center justify-items-center gap-4 rounded-xl border border-white/30 bg-black/50 px-3 py-2 backdrop-blur-sm"
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, delay, type: "spring", bounce: 0.3 }}
+      {...(!is_exporting && {
+        initial: { opacity: 0, scale: 0.8 },
+        animate: { opacity: 1, scale: 1 },
+        transition: { duration: 0.4, delay, type: "spring", bounce: 0.3 },
+      })}
     >
       <div className={"mx-auto"}>
         <Icon className={`h-6 w-6 ${color}`} />
       </div>
       <div className="grid w-full justify-center justify-items-center gap-1">
-        <span className="text-base leading-tight font-bold">{format_number(value)}</span>
+        <span className="text-base font-bold leading-tight">{format_number(value)}</span>
         <span className="text-xs text-white/60">{label}</span>
       </div>
     </motion.div>
