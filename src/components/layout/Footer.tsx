@@ -1,33 +1,25 @@
-"use client";
-
-import Link from "next/link";
 import { GithubIcon } from "lucide-react";
 import Image from "next/image";
-import { useMobile } from "@/hooks/useMobile";
+import Link from "next/link";
 import React from "react";
 
 export default function Footer() {
-  const is_mobile = useMobile();
   const current_year = new Date().getFullYear();
 
   return (
     <div className="mx-auto w-full p-4">
       <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white p-4 shadow-xl backdrop-blur-lg">
-        {is_mobile ? (
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            <div className="flex flex-wrap justify-around gap-4">
-              <Logo />
-              <Author_Link show_details={false} />
-            </div>
-            <Features />
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+          <div className="flex flex-wrap justify-around gap-4 md:contents">
             <Logo />
-            <Features />
-            <Author_Link show_details={true} />
+            <div className="md:order-2">
+              <Author_Link />
+            </div>
           </div>
-        )}
+          <div className="md:order-1">
+            <Features />
+          </div>
+        </div>
 
         <div className="flex flex-col items-center justify-between gap-2 border-t border-black/10 pt-4 md:flex-row">
           <span className="text-xs text-black/50">© {current_year} TTWrapped. All rights reserved.</span>
@@ -62,7 +54,7 @@ function Features() {
   );
 }
 
-function Author_Link({ show_details }: { show_details: boolean }) {
+function Author_Link() {
   return (
     <Link
       className="flex transform items-center gap-3 rounded-xl bg-black/5 p-2.5 transition-all duration-100 hover:bg-black/10"
@@ -77,12 +69,10 @@ function Author_Link({ show_details }: { show_details: boolean }) {
         src="https://avatars.githubusercontent.com/u/25434461?v=4"
         alt="Murad Tochiev profile"
       />
-      {show_details && (
-        <div className="text-left">
-          <div className="text-sm font-semibold">Murad Tochiev</div>
-          <div className="text-xs text-black/60">@EKO-GITHUB</div>
-        </div>
-      )}
+      <div className="hidden text-left md:block">
+        <div className="text-sm font-semibold">Murad Tochiev</div>
+        <div className="text-xs text-black/60">@EKO-GITHUB</div>
+      </div>
       <GithubIcon
         className="text-black/80"
         size={18}
