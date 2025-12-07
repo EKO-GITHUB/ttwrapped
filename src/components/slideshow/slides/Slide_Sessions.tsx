@@ -21,7 +21,7 @@ export function Slide_Sessions() {
   const formatted_date = longest_date?.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" });
 
   return (
-    <div className={"rounded-xl bg-zinc-900/80 px-6 py-8"}>
+    <>
       <motion.p
         className="mb-4 text-lg font-medium opacity-80"
         {...(!is_exporting && {
@@ -65,7 +65,7 @@ export function Slide_Sessions() {
         <Animated_Number
           value={Math.round(avg_videos)}
           duration={1.2}
-        />{" "}
+        />
         videos per session
       </motion.p>
       <motion.p
@@ -105,7 +105,7 @@ export function Slide_Sessions() {
         <Animated_Number
           value={longest_videos}
           duration={1.2}
-        />
+        />{" "}
         videos
       </motion.p>
       <motion.p
@@ -132,6 +132,6 @@ export function Slide_Sessions() {
           on {formatted_date}
         </motion.p>
       )}
-    </div>
+    </>
   );
 }
