@@ -13,7 +13,7 @@ function Slide_Export_Wrapper({ background, content }: { background: React.React
   return React.createElement(
     "div",
     {
-      className: "relative flex h-full w-full flex-col overflow-hidden bg-black",
+      className: "relative flex h-full w-full flex-col overflow-hidden",
     },
     React.createElement(
       "div",
