@@ -1,9 +1,12 @@
+"use client";
+
 import { format_number } from "@/components/slideshow/format_number";
+import { get_profile_definition } from "@/components/slideshow/slides/slide_overview/get_profile_definition";
+import { calculate_user_profile } from "@/stores/calculate_user_profile";
+import { useData_store } from "@/stores/useData_store";
+import { motion } from "framer-motion";
 import { Clock, Heart, Layers, LucideIcon, MessageCircle, Play, Share2, UserPlus, Users } from "lucide-react";
 import Image from "next/image";
-import { useData_store } from "@/stores/useData_store";
-import { calculate_user_profile } from "@/stores/calculate_user_profile";
-import { get_profile_definition } from "@/components/slideshow/slides/slide_overview/get_profile_definition";
 
 export function Slide_Overview() {
   const stats = useData_store((state) => state.stats);
@@ -39,21 +42,43 @@ export function Slide_Overview() {
 
   return (
     <>
-      <p className="mb-6 text-lg font-medium opacity-80">Your Year in Review</p>
+      <motion.p
+        className="mb-6 text-lg font-medium opacity-80"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 0.8, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        Your Year in Review
+      </motion.p>
 
-      <div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.3, type: "spring", bounce: 0.4 }}
+        className={"grid items-center justify-center justify-items-center"}
+      >
         <img
           src={profile_photo}
           alt={username || "Profile"}
           className="mb-1 h-20 w-20 rounded-full border-4 border-white/50 object-cover"
         />
-        <p className="mb-2 text-xl font-semibold">@{username}</p>
-      </div>
+        <motion.p
+          className="mb-2 text-xl font-semibold"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          @{username}
+        </motion.p>
+      </motion.div>
 
-      <div
+      <motion.div
         className={
-          "flex items-center justify-center justify-items-center gap-2 rounded-md border-2 border-white/40 bg-black/60 p-2"
+          "mb-4 flex items-center justify-center justify-items-center gap-2 rounded-md border-2 border-white/40 bg-black/60 p-2"
         }
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
       >
         <p className="mb-1">
           {profile_definition.profile_image && (
@@ -65,11 +90,23 @@ export function Slide_Overview() {
             />
           )}
         </p>
-        <p className="mb-1 text-2xl font-bold">{profile_definition.profile_name}</p>
-      </div>
-      <p className="mb-4 max-w-md text-sm leading-relaxed opacity-80">{profile_definition.profile_description}</p>
+        <p className="mb-1 text-xl font-bold">{profile_definition.profile_name}</p>
+      </motion.div>
+      <motion.p
+        className="mb-4 max-w-md text-sm leading-relaxed opacity-80"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.8 }}
+        transition={{ duration: 0.5, delay: 0.9 }}
+      >
+        {profile_definition.profile_description}
+      </motion.p>
 
-      <div className="mb-2 flex gap-2">
+      <motion.div
+        className="mb-6 flex gap-2"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 1.1 }}
+      >
         <Dimension_Chip
           label="Consumption"
           level={profile_metrics.consumption}
@@ -86,58 +123,64 @@ export function Slide_Overview() {
           label="Creation"
           level={profile_metrics.creation}
         />
-      </div>
+      </motion.div>
 
-      <div className={"my-2 w-full border border-t border-white/20 sm:my-4"}></div>
-
-      <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-1 sm:grid-cols-3 xl:grid-cols-4">
         <Stat_Box
           icon={Clock}
           label="Hours"
           value={Math.round(hours_watched)}
           color="text-cyan-400"
+          delay={1.5}
         />
         <Stat_Box
           icon={Play}
           label="Videos"
           value={videos_watched}
           color="text-pink-400"
+          delay={1.6}
         />
         <Stat_Box
           icon={Layers}
           label="Sessions"
           value={sessions}
           color="text-purple-400"
+          delay={1.7}
         />
         <Stat_Box
           icon={Heart}
           label="Likes"
           value={likes}
           color="text-red-400"
+          delay={1.8}
         />
         <Stat_Box
           icon={Share2}
           label="Shares"
           value={shares}
           color="text-green-400"
+          delay={1.9}
         />
         <Stat_Box
           icon={MessageCircle}
           label="Comments"
           value={comments}
           color="text-yellow-400"
+          delay={2.0}
         />
         <Stat_Box
           icon={Users}
           label="Followers"
           value={followers}
           color="text-blue-400"
+          delay={2.1}
         />
         <Stat_Box
           icon={UserPlus}
           label="Following"
           value={following}
           color="text-orange-400"
+          delay={2.2}
         />
       </div>
     </>
@@ -149,14 +192,21 @@ function Stat_Box({
   label,
   value,
   color,
+  delay,
 }: {
   icon: LucideIcon;
   label: string;
   value: number;
   color: string;
+  delay: number;
 }) {
   return (
-    <div className="flex w-full items-center justify-items-center gap-4 rounded-xl border border-white/30 bg-black/50 px-3 py-2 backdrop-blur-sm">
+    <motion.div
+      className="flex w-full items-center justify-items-center gap-4 rounded-xl border border-white/30 bg-black/50 px-3 py-2 backdrop-blur-sm"
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, delay, type: "spring", bounce: 0.3 }}
+    >
       <div className={"mx-auto"}>
         <Icon className={`h-6 w-6 ${color}`} />
       </div>
@@ -164,7 +214,7 @@ function Stat_Box({
         <span className="text-base leading-tight font-bold">{format_number(value)}</span>
         <span className="text-xs text-white/60">{label}</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
