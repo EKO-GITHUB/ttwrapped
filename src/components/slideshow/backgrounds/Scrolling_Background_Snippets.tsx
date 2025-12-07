@@ -71,6 +71,8 @@ function Scrolling_Column({ index, background_indices, duration }: Scrolling_Col
   const direction = index % 2 === 0 ? -1 : 1;
   const total_height = SNIPPETS_PER_COLUMN * (SNIPPET_HEIGHT + SNIPPET_GAP);
 
+  const [random_offset] = useState(() => Math.random() * total_height * direction);
+
   const render_snippet = (bg_index: number, key: string) => (
     <div
       key={key}
@@ -113,7 +115,10 @@ function Scrolling_Column({ index, background_indices, duration }: Scrolling_Col
       ) : (
         <div
           className="flex flex-col"
-          style={{ gap: `${SNIPPET_GAP}px` }}
+          style={{
+            gap: `${SNIPPET_GAP}px`,
+            transform: `translateY(${random_offset}px)`,
+          }}
         >
           {background_indices.map((bg_index, i) => render_snippet(bg_index, `a-${i}`))}
           {background_indices.map((bg_index, i) => render_snippet(bg_index, `b-${i}`))}
