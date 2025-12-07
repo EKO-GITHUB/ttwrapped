@@ -40,6 +40,8 @@ export const useData_store = create<UseData_store>((set, get) => ({
   load_demo_data: async () => {
     set({ is_loading: true, error: null });
 
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
     try {
       const demo_data: TikTok_Data = generate_demo_data();
       const section_state = validate_sections(demo_data);
