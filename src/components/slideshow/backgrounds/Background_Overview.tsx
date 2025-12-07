@@ -1,5 +1,6 @@
 "use client";
 
+import { useData_store } from "@/stores/useData_store";
 import React, { useEffect, useRef } from "react";
 
 type Floating_Shape = {
@@ -16,6 +17,7 @@ type Floating_Shape = {
 
 export function Background_Overview() {
   const canvas_ref = useRef<HTMLCanvasElement>(null);
+  const is_exporting = useData_store((state) => state.is_exporting);
 
   useEffect(() => {
     const canvas = canvas_ref.current;
@@ -32,6 +34,7 @@ export function Background_Overview() {
 
     const shapes: Floating_Shape[] = [];
     let animation_frame: number;
+    let frame_count = is_exporting ? 100 : 0;
 
     const colors = ["#FF6B9D", "#4ECDC4", "#A29BFE", "#74B9FF", "#55E6C1"];
 
@@ -43,7 +46,7 @@ export function Background_Overview() {
         vy: (Math.random() - 0.5) * 0.3,
         size: 60 + Math.random() * 80,
         color: colors[Math.floor(Math.random() * colors.length)],
-        rotation: Math.random() * Math.PI * 2,
+        rotation: is_exporting ? Math.random() * Math.PI * 2 * 10 : Math.random() * Math.PI * 2,
         rotation_speed: (Math.random() - 0.5) * 0.01,
         opacity: 0.15 + Math.random() * 0.1,
       });
@@ -78,6 +81,7 @@ export function Background_Overview() {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      frame_count++;
 
       shapes.forEach((shape) => {
         update_shape(shape);
@@ -94,12 +98,12 @@ export function Background_Overview() {
       cancelAnimationFrame(animation_frame);
       window.removeEventListener("resize", resize_canvas);
     };
-  }, []);
+  }, [is_exporting]);
 
   return (
     <canvas
       ref={canvas_ref}
-      className="fixed inset-0 -z-10 bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950"
+      className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950"
     />
   );
 }
