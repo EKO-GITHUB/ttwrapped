@@ -1,6 +1,7 @@
 "use client";
 
 import { Background_Comments } from "@/components/slideshow/backgrounds/Background_Comments";
+import { Background_Complete } from "@/components/slideshow/backgrounds/Background_Complete";
 import { Background_Daily_Avg } from "@/components/slideshow/backgrounds/Background_Daily_Avg";
 import { Background_Direct_Messages } from "@/components/slideshow/backgrounds/Background_Direct_Messages";
 import { Background_Download_Size } from "@/components/slideshow/backgrounds/Background_Download_Size";
@@ -25,5 +26,5 @@ export const slide_backgrounds_config: Record<string, React.ReactNode> = {
   shares: <Background_Shares />,
   direct_messages: <Background_Direct_Messages />,
   overview: <Background_Overview />,
-  complete: <></>,
+  complete: <Background_Complete />,
 };
