@@ -117,7 +117,7 @@ export function Background_Shares() {
             radius: Math.random() * 150,
             opacity: Math.random() * 0.8,
             max_radius: 100 + Math.random() * 100,
-            speed: 1.5 + Math.random() * 1,
+            speed: 1.5 + Math.random(),
           });
         }
         burst.next_ring_time = frame_count + Math.random() * 60;
