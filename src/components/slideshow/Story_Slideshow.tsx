@@ -133,7 +133,7 @@ export default function Story_Slideshow() {
     } else if (x > (width * 2) / 3) {
       go_next();
     } else {
-      set_is_paused((prev) => !prev);
+      set_is_paused((prev) => (debug_mode ? true : !prev));
     }
   };
 
@@ -145,6 +145,7 @@ export default function Story_Slideshow() {
         className="relative flex h-full w-full flex-col overflow-hidden"
         onClick={handle_click}
       >
+        {/*TODO: REMOVE THIS*/}
         {debug_mode && (
           <div className={"absolute z-50 grid w-full justify-center"}>
             <button
