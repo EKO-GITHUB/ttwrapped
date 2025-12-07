@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useCanvasAnimation } from "@/components/slideshow/backgrounds/useCanvasAnimation";
+import React, { useRef } from "react";
 
 type Data_Column = {
   x: number;
@@ -11,41 +12,31 @@ type Data_Column = {
   glow_intensity: number;
 };
 
+const binary_chars = ["0", "1"];
+const hex_chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
+
 export function Background_Download_Size() {
-  const canvas_ref = useRef<HTMLCanvasElement>(null);
+  const columns_ref = useRef<Data_Column[]>([]);
 
-  useEffect(() => {
-    const canvas = canvas_ref.current;
-    if (!canvas) return;
+  const draw = (ctx: CanvasRenderingContext2D) => {
+    const canvas = ctx.canvas;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const resize_canvas = () => {
+    if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      initialize_columns();
-    };
+      columns_ref.current = [];
+    }
 
-    const data_columns: Data_Column[] = [];
-    let animation_frame: number;
-
-    const binary_chars = ["0", "1"];
-    const hex_chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
-
-    const get_random_character = () => {
-      const rand = Math.random();
-      if (rand < 0.6) {
-        return binary_chars[Math.floor(Math.random() * binary_chars.length)];
-      } else {
-        return hex_chars[Math.floor(Math.random() * hex_chars.length)];
-      }
-    };
-
-    const initialize_columns = () => {
-      data_columns.length = 0;
+    if (columns_ref.current.length === 0) {
       const column_width = 20;
       const column_count = Math.ceil(canvas.width / column_width);
+
+      const get_random_character = () =>
+        Math.random() < 0.6
+          ? binary_chars[Math.floor(Math.random() * binary_chars.length)]
+          : hex_chars[Math.floor(Math.random() * hex_chars.length)];
+
+      const columns: Data_Column[] = [];
 
       for (let i = 0; i < column_count; i++) {
         const char_count = 30 + Math.floor(Math.random() * 20);
@@ -59,7 +50,7 @@ export function Background_Download_Size() {
           opacity_values.push(0);
         }
 
-        data_columns.push({
+        columns.push({
           x: i * column_width,
           characters,
           y_positions,
@@ -68,9 +59,12 @@ export function Background_Download_Size() {
           glow_intensity: 0.3 + Math.random() * 0.5,
         });
       }
-    };
 
-    resize_canvas();
+      columns_ref.current = columns;
+    }
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const draw_column = (column: Data_Column) => {
       ctx.font = "14px 'Courier New', monospace";
@@ -78,43 +72,44 @@ export function Background_Download_Size() {
 
       for (let i = 0; i < column.characters.length; i++) {
         const y = column.y_positions[i];
+        if (y < 0 || y > canvas.height) continue;
 
-        if (y > 0 && y < canvas.height) {
-          const distance_from_lead = i === 0 ? 0 : i;
-          const opacity = Math.max(0, 1 - distance_from_lead * 0.05);
-          column.opacity_values[i] = opacity;
+        const distance_from_lead = i === 0 ? 0 : i;
+        const opacity = Math.max(0, 1 - distance_from_lead * 0.05);
+        column.opacity_values[i] = opacity;
 
-          const is_lead = i === 0;
-          const is_size_unit = column.characters[i].length > 1;
+        const is_lead = i === 0;
+        const char = column.characters[i];
+        const is_size_unit = char.length > 1;
 
-          if (is_lead) {
-            ctx.shadowColor = is_size_unit ? "#00FFFF" : "#00FF00";
-            ctx.shadowBlur = 15 * column.glow_intensity;
-            ctx.fillStyle = is_size_unit ? `rgba(0, 255, 255, ${opacity})` : `rgba(0, 255, 0, ${opacity})`;
-          } else {
-            ctx.shadowBlur = 5 * column.glow_intensity;
-            ctx.shadowColor = is_size_unit ? "#00AAAA" : "#00AA00";
-            ctx.fillStyle = is_size_unit ? `rgba(0, 200, 200, ${opacity * 0.8})` : `rgba(0, 200, 0, ${opacity * 0.8})`;
-          }
-
-          ctx.fillText(column.characters[i], column.x, y);
+        if (is_lead) {
+          ctx.shadowColor = is_size_unit ? "#00FFFF" : "#00FF00";
+          ctx.shadowBlur = 15 * column.glow_intensity;
+          ctx.fillStyle = is_size_unit ? `rgba(0, 255, 255, ${opacity})` : `rgba(0, 255, 0, ${opacity})`;
+        } else {
+          ctx.shadowBlur = 5 * column.glow_intensity;
+          ctx.shadowColor = is_size_unit ? "#00AAAA" : "#00AA00";
+          ctx.fillStyle = is_size_unit ? `rgba(0, 200, 200, ${opacity * 0.8})` : `rgba(0, 200, 0, ${opacity * 0.8})`;
         }
+
+        ctx.fillText(char, column.x, y);
       }
 
       ctx.shadowBlur = 0;
     };
 
     const update_column = (column: Data_Column) => {
+      const get_random_character = () =>
+        Math.random() < 0.6
+          ? binary_chars[Math.floor(Math.random() * binary_chars.length)]
+          : hex_chars[Math.floor(Math.random() * hex_chars.length)];
+
       for (let i = 0; i < column.y_positions.length; i++) {
         column.y_positions[i] += column.speed;
 
         if (column.y_positions[i] > canvas.height + 100) {
-          column.y_positions[i] = -20;
+          column.y_positions[i] = i > 0 ? column.y_positions[i - 1] - 20 : -20;
           column.characters[i] = get_random_character();
-
-          if (i > 0) {
-            column.y_positions[i] = column.y_positions[i - 1] - 20;
-          }
         }
       }
 
@@ -145,33 +140,19 @@ export function Background_Download_Size() {
       }
     };
 
-    const animate = () => {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    draw_data_bars();
+    columns_ref.current.forEach((column) => {
+      update_column(column);
+      draw_column(column);
+    });
+  };
 
-      draw_data_bars();
-
-      data_columns.forEach((column) => {
-        update_column(column);
-        draw_column(column);
-      });
-
-      animation_frame = requestAnimationFrame(animate);
-    };
-
-    animation_frame = requestAnimationFrame(animate);
-    window.addEventListener("resize", resize_canvas);
-
-    return () => {
-      cancelAnimationFrame(animation_frame);
-      window.removeEventListener("resize", resize_canvas);
-    };
-  }, []);
+  const { canvasRef } = useCanvasAnimation(draw);
 
   return (
     <canvas
-      ref={canvas_ref}
-      className="fixed inset-0 -z-10 bg-black"
+      ref={canvasRef}
+      className="absolute inset-0"
     />
   );
 }
