@@ -1,5 +1,6 @@
 "use client";
 
+import { Background_Comments } from "@/components/slideshow/backgrounds/Background_Comments";
 import { Background_Daily_Avg } from "@/components/slideshow/backgrounds/Background_Daily_Avg";
 import { Background_Download_Size } from "@/components/slideshow/backgrounds/Background_Download_Size";
 import { Background_Likes } from "@/components/slideshow/backgrounds/Background_Likes";
@@ -17,7 +18,7 @@ export const slide_backgrounds_config: Record<string, React.ReactNode> = {
   daily_avg: <Background_Daily_Avg />,
   download_size: <Background_Download_Size />,
   likes: <Background_Likes />,
-  comments: <></>,
+  comments: <Background_Comments />,
   shares: <></>,
   direct_messages: <></>,
   overview: <></>,
