@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCanvasAnimation } from "@/components/slideshow/backgrounds/useCanvasAnimation";
+import React, { useRef } from "react";
 
 type Particle = {
   x: number;
@@ -18,30 +19,26 @@ type Particle = {
 };
 
 export function Background_Likes() {
-  const canvas_ref = useRef<HTMLCanvasElement>(null);
+  const particles_ref = useRef<Particle[]>([]);
+  const has_burst_ref = useRef(false);
+  const last_emission_ref = useRef<number>(0);
 
-  useEffect(() => {
-    const canvas = canvas_ref.current;
-    if (!canvas) return;
+  const draw = (ctx: CanvasRenderingContext2D, timestamp: number) => {
+    const canvas = ctx.canvas;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const resize_canvas = () => {
+    if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-    };
-    resize_canvas();
+    }
 
-    const particles: Particle[] = [];
-    const colors = ["#FF0050", "#00F2EA", "#FE2C55", "#25F4EE", "#FFFFFF", "#FFD700"];
+    const particles = particles_ref.current;
     const gravity = 0.3;
     const friction = 0.99;
-    let animation_frame: number;
+    const colors = ["#FF0050", "#00F2EA", "#FE2C55", "#25F4EE", "#FFFFFF", "#FFD700"];
 
     const create_particle = (x: number, y: number, burst: boolean = false): Particle => {
-      const angle = burst ? (Math.random() * Math.PI * 2) : (Math.PI / 2 + (Math.random() - 0.5) * 0.3);
-      const speed = burst ? (Math.random() * 8 + 4) : (Math.random() * 2 + 1);
+      const angle = burst ? Math.random() * Math.PI * 2 : Math.PI / 2 + (Math.random() - 0.5) * 0.3;
+      const speed = burst ? Math.random() * 8 + 4 : Math.random() * 2 + 1;
 
       return {
         x,
@@ -52,14 +49,15 @@ export function Background_Likes() {
         rotation_speed: (Math.random() - 0.5) * 0.2,
         size: Math.random() * 8 + 6,
         color: colors[Math.floor(Math.random() * colors.length)],
-        shape: Math.random() > 0.3 ? (["circle", "square", "triangle"] as const)[Math.floor(Math.random() * 3)] : "heart",
+        shape:
+          Math.random() > 0.3 ? (["circle", "square", "triangle"] as const)[Math.floor(Math.random() * 3)] : "heart",
         opacity: 1,
         lifetime: 0,
         max_lifetime: Math.random() * 180 + 120,
       };
     };
 
-    const initial_burst = () => {
+    if (!has_burst_ref.current) {
       const burst_count = 80;
       const center_x = canvas.width / 2;
       const center_y = canvas.height / 2;
@@ -67,7 +65,16 @@ export function Background_Likes() {
       for (let i = 0; i < burst_count; i++) {
         particles.push(create_particle(center_x, center_y, true));
       }
-    };
+
+      has_burst_ref.current = true;
+    }
+
+    const emission_interval = 300;
+    if (timestamp - last_emission_ref.current > emission_interval) {
+      const spawn_x = Math.random() * canvas.width;
+      particles.push(create_particle(spawn_x, -20, false));
+      last_emission_ref.current = timestamp;
+    }
 
     const draw_heart = (ctx: CanvasRenderingContext2D, x: number, y: number, size: number, rotation: number) => {
       ctx.save();
@@ -118,7 +125,6 @@ export function Background_Likes() {
     const update_particles = () => {
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
-
         p.vy += gravity;
         p.vx *= friction;
         p.vy *= friction;
@@ -126,9 +132,7 @@ export function Background_Likes() {
         p.y += p.vy;
         p.rotation += p.rotation_speed;
         p.lifetime += 1;
-
-        const lifetime_progress = p.lifetime / p.max_lifetime;
-        p.opacity = 1 - lifetime_progress;
+        p.opacity = 1 - p.lifetime / p.max_lifetime;
 
         if (p.lifetime >= p.max_lifetime || p.y > canvas.height + 50) {
           particles.splice(i, 1);
@@ -136,39 +140,17 @@ export function Background_Likes() {
       }
     };
 
-    let last_emission = 0;
-    const emission_interval = 200;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    update_particles();
+    particles.forEach(draw_particle);
+  };
 
-    const animate = (timestamp: number) => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      if (timestamp - last_emission > emission_interval && particles.length < 150) {
-        const spawn_x = Math.random() * canvas.width;
-        particles.push(create_particle(spawn_x, -20, false));
-        last_emission = timestamp;
-      }
-
-      update_particles();
-      particles.forEach(draw_particle);
-
-      animation_frame = requestAnimationFrame(animate);
-    };
-
-    initial_burst();
-    animation_frame = requestAnimationFrame(animate);
-
-    window.addEventListener("resize", resize_canvas);
-
-    return () => {
-      cancelAnimationFrame(animation_frame);
-      window.removeEventListener("resize", resize_canvas);
-    };
-  }, []);
+  const { canvasRef } = useCanvasAnimation(draw);
 
   return (
     <canvas
-      ref={canvas_ref}
-      className="fixed inset-0 -z-10 bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700"
+      ref={canvasRef}
+      className="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700"
     />
   );
 }
