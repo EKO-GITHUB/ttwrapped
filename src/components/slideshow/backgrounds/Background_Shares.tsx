@@ -79,7 +79,7 @@ export function Background_Shares() {
         x: burst.x,
         y: burst.y,
         angle,
-        speed: 2 + Math.random() * 2,
+        speed: 0.5 + Math.random() * 0.1,
         distance: 0,
         max_distance: 150 + Math.random() * 100,
         opacity: 1,
