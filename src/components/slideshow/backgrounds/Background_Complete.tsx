@@ -1,5 +1,6 @@
 "use client";
 
+import { useData_store } from "@/stores/useData_store";
 import React, { useEffect, useRef } from "react";
 
 type Star = {
@@ -16,6 +17,7 @@ type Star = {
 
 export function Background_Complete() {
   const canvas_ref = useRef<HTMLCanvasElement>(null);
+  const is_exporting = useData_store((state) => state.is_exporting);
 
   useEffect(() => {
     const canvas = canvas_ref.current;
@@ -31,7 +33,7 @@ export function Background_Complete() {
     resize_canvas();
 
     let animation_frame: number;
-    let frame_count = 0;
+    let frame_count = is_exporting ? 100 : 0;
 
     const stars: Star[] = [];
 
@@ -41,13 +43,13 @@ export function Background_Complete() {
       const depth = Math.random();
 
       stars.push({
-        x,
+        x: is_exporting ? x + depth * 0.05 * 100 : x,
         y,
         base_x: x,
         base_y: y,
         size: Math.random() * 1.5 + 0.5,
         brightness: Math.random() * 0.5 + 0.5,
-        twinkle_phase: Math.random() * Math.PI * 2,
+        twinkle_phase: is_exporting ? Math.random() * Math.PI * 2 * 10 : Math.random() * Math.PI * 2,
         twinkle_speed: 0.01 + Math.random() * 0.02,
         depth,
       });
@@ -107,12 +109,12 @@ export function Background_Complete() {
       cancelAnimationFrame(animation_frame);
       window.removeEventListener("resize", resize_canvas);
     };
-  }, []);
+  }, [is_exporting]);
 
   return (
     <canvas
       ref={canvas_ref}
-      className="fixed inset-0 -z-10 bg-gradient-to-b from-slate-950 via-indigo-950 to-purple-950"
+      className="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950 to-purple-950"
     />
   );
 }
