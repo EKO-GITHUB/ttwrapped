@@ -1,9 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useData_store } from "@/stores/useData_store";
-import { MessageCircle } from "lucide-react";
 import { Direct_Message_Item } from "@/types/TikTok_Data_Schema";
+import { motion } from "framer-motion";
+import { MessageCircle } from "lucide-react";
 
 export function Slide_Direct_Messages() {
   const direct_message = useData_store((state) => state.direct_message);
@@ -59,11 +59,11 @@ export function Slide_Direct_Messages() {
         Who you chatted most with
       </motion.p>
 
-      <div className="w-full max-w-lg space-y-4">
+      <div className="w-full max-w-lg space-y-4 px-6">
         {top_friends.map((friend, index) => (
           <motion.div
             key={friend.name}
-            className="flex items-center gap-4 rounded-xl bg-white/10 p-4 backdrop-blur-sm"
+            className="flex items-center gap-4 rounded-xl bg-slate-800/80 p-4 backdrop-blur-sm"
             initial={{ opacity: 0, x: -50, scale: 0.8 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             transition={{
@@ -109,8 +109,10 @@ function get_top_chatted_friends(chat_history: Record<string, Direct_Message_Ite
       return !isNaN(message_date.getTime()) && message_date >= one_year_ago;
     });
 
+    console.log(name, recent_messages.length);
+
     return {
-      name,
+      name: name.replaceAll("Chat History with ", "").replaceAll(":", ""),
       message_count: recent_messages.length,
     };
   });
