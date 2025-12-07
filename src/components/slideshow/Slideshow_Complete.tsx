@@ -149,6 +149,13 @@ async function export_slide_as_image(slide: Slide, index: number) {
   container.style.height = `${MAX_HEIGHT}px`;
   container.style.overflow = "hidden";
 
+  const background_wrapper = document.createElement("div");
+  background_wrapper.style.position = "absolute";
+  background_wrapper.style.inset = "0";
+  background_wrapper.style.backgroundSize = "cover";
+  background_wrapper.style.backgroundPosition = "center";
+  container.appendChild(background_wrapper);
+
   const slide_wrapper = document.createElement("div");
   slide_wrapper.style.position = "relative";
   slide_wrapper.style.width = "100%";
@@ -156,15 +163,6 @@ async function export_slide_as_image(slide: Slide, index: number) {
   slide_wrapper.style.display = "flex";
   slide_wrapper.style.flexDirection = "column";
   slide_wrapper.style.backgroundColor = "black";
-
-  const background_wrapper = document.createElement("div");
-  background_wrapper.style.position = "absolute";
-  background_wrapper.style.inset = "0";
-  background_wrapper.style.backgroundSize = "cover";
-  background_wrapper.style.backgroundPosition = "center";
-  slide_wrapper.appendChild(background_wrapper);
-  const root_background = createRoot(background_wrapper);
-  root_background.render(slide.background);
 
   const content_wrapper = document.createElement("div");
   content_wrapper.style.position = "relative";
@@ -181,7 +179,8 @@ async function export_slide_as_image(slide: Slide, index: number) {
   slide_wrapper.appendChild(content_wrapper);
   container.appendChild(slide_wrapper);
   document.body.appendChild(container);
-  const root_content = createRoot(content_wrapper);
+  const root_content = createRoot(container);
+  root_content.render(slide.background);
   root_content.render(slide.content);
 
   await new Promise((resolve) => setTimeout(resolve, 100));
@@ -210,7 +209,7 @@ async function export_slide_as_image(slide: Slide, index: number) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `tiktok-wrapped-${String(index).padStart(2, "0")}-${slide.id}.png`;
+    link.download = `ttwrapped-${String(index).padStart(2, "0")}-${slide.id}.png`;
     link.click();
 
     URL.revokeObjectURL(url);
