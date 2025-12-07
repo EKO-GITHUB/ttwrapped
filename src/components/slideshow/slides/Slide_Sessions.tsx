@@ -1,9 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { format_number } from "@/components/slideshow/format_number";
 import { Animated_Number } from "@/components/slideshow/Animated_Number";
+import { format_number } from "@/components/slideshow/format_number";
 import { useData_store } from "@/stores/useData_store";
+import { motion } from "framer-motion";
 
 export function Slide_Sessions() {
   const stats = useData_store((state) => state.stats);
@@ -20,7 +20,7 @@ export function Slide_Sessions() {
   const formatted_date = longest_date?.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" });
 
   return (
-    <>
+    <div className={"rounded-xl bg-zinc-900/80 px-6 py-8"}>
       <motion.p
         className="mb-4 text-lg font-medium opacity-80"
         initial={{ opacity: 0, y: -20 }}
@@ -39,7 +39,11 @@ export function Slide_Sessions() {
           animate={{ scale: [1, 1.05, 1] }}
           transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
         >
-          <Animated_Number value={count} duration={1.8} format={format_number} />
+          <Animated_Number
+            value={count}
+            duration={1.8}
+            format={format_number}
+          />
         </motion.span>
       </motion.p>
       <motion.p
@@ -48,7 +52,12 @@ export function Slide_Sessions() {
         animate={{ opacity: 0.8 }}
         transition={{ duration: 0.5, delay: 1.5 }}
       >
-        ~<Animated_Number value={Math.round(avg_videos)} duration={1.2} /> videos per session
+        ~
+        <Animated_Number
+          value={Math.round(avg_videos)}
+          duration={1.2}
+        />{" "}
+        videos per session
       </motion.p>
       <motion.p
         className="mb-6 text-lg opacity-60"
@@ -56,7 +65,12 @@ export function Slide_Sessions() {
         animate={{ opacity: 0.6 }}
         transition={{ duration: 0.5, delay: 1.8 }}
       >
-        ~<Animated_Number value={Math.round(avg_minutes)} duration={1.2} /> min average
+        ~
+        <Animated_Number
+          value={Math.round(avg_minutes)}
+          duration={1.2}
+        />{" "}
+        min average
       </motion.p>
 
       <motion.p
@@ -73,7 +87,11 @@ export function Slide_Sessions() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 2.4, type: "spring", bounce: 0.3 }}
       >
-        <Animated_Number value={longest_videos} duration={1.2} /> videos
+        <Animated_Number
+          value={longest_videos}
+          duration={1.2}
+        />
+        videos
       </motion.p>
       <motion.p
         className="mt-1 text-base opacity-70"
@@ -95,6 +113,6 @@ export function Slide_Sessions() {
           on {formatted_date}
         </motion.p>
       )}
-    </>
+    </div>
   );
 }
