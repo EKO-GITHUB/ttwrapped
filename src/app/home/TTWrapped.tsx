@@ -13,6 +13,7 @@ import Story_Slideshow from "@/components/slideshow/Story_Slideshow";
 import Slideshow_Complete from "@/components/slideshow/Slideshow_Complete";
 import { useData_store } from "@/stores/useData_store";
 import { Disclaimer } from "@/app/home/sections/Disclaimer";
+import { Seo_Info_Section } from "@/app/home/sections/Seo_Info_Section";
 import Analytics_Dashboard from "@/components/analytics/Analytics_Dashboard";
 
 export default function TTWrapped() {
@@ -70,6 +71,8 @@ export default function TTWrapped() {
         <Tech_Stack_Section />
         <Open_Source_Section />
       </Accordion>
+
+      <Seo_Info_Section />
 
       <Disclaimer />
     </div>
