@@ -41,6 +41,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta
+          property="og:logo"
+          content="https://ttwrapped.com/logo.png"
+        />
         <link
           rel="preconnect"
           href="https://fonts.googleapis.com"
