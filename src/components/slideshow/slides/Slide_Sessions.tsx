@@ -65,7 +65,7 @@ export function Slide_Sessions() {
         <Animated_Number
           value={Math.round(avg_videos)}
           duration={1.2}
-        />
+        />{" "}
         videos per session
       </motion.p>
       <motion.p
