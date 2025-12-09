@@ -128,7 +128,7 @@ export default function Story_Slideshow() {
     } else if (x > (width * 2) / 3) {
       go_next();
     } else {
-      set_is_paused((prev) => prev);
+      set_is_paused((prev) => !prev);
     }
   };
 
