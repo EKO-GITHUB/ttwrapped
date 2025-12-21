@@ -59,7 +59,17 @@ export default function Terms_Of_Service() {
               is completely separate from your TikTok data and cannot be linked to any individual user or their uploaded
               files.
             </p>
-            <p>For more details about privacy, please see our Privacy section on the homepage.</p>
+            <p>
+              For more details about privacy, please see our Privacy section on the homepage. For GDPR-related inquiries
+              (data access, deletion, or portability requests), contact us at{" "}
+              <a
+                href="mailto:contact@ttwrapped.com"
+                className="underline"
+              >
+                contact@ttwrapped.com
+              </a>
+              .
+            </p>
           </section>
 
           <section className="space-y-3">
@@ -108,7 +118,14 @@ export default function Terms_Of_Service() {
           <section className="space-y-3">
             <h2 className="text-2xl font-semibold">10. Contact</h2>
             <p>
-              If you have any questions about these Terms of Service, please reach out through our GitHub repository.
+              If you have any questions about these Terms of Service, please email us at{" "}
+              <a
+                href="mailto:contact@ttwrapped.com"
+                className="underline"
+              >
+                contact@ttwrapped.com
+              </a>
+              . You can also reach out through our GitHub repository.
             </p>
           </section>
         </div>

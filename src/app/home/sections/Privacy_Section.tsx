@@ -52,6 +52,18 @@ export default function Privacy_Section() {
           personal information, and is fully GDPR compliant. No analytics data is ever connected to your TikTok data.
         </p>
 
+        <p>
+          <strong className="text-gray-800 dark:text-gray-200">Questions or GDPR requests?</strong> For any privacy
+          questions or GDPR-related inquiries (data access, deletion, or portability requests), please contact us at{" "}
+          <a
+            href="mailto:contact@ttwrapped.com"
+            className="underline"
+          >
+            contact@ttwrapped.com
+          </a>
+          .
+        </p>
+
         <p className="text-sm italic">
           Your data is yours. We believe privacy should be the default, not a premium feature.
         </p>
