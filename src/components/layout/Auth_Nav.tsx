@@ -9,6 +9,7 @@ import Link from "next/link";
 export default function Auth_Nav() {
   const { user } = useUser();
   const view_state = useData_store((state) => state.view_state);
+  const reset = useData_store((state) => state.reset);
 
   const tiktokAccount = user?.externalAccounts.find((acc) => acc.provider === "tiktok");
   console.log(user);
@@ -23,6 +24,7 @@ export default function Auth_Nav() {
         <Link
           href="/"
           className="flex items-center gap-2"
+          onClick={reset}
         >
           <Image
             src="/logo.svg"
