@@ -25,8 +25,21 @@ export const tiktok_router = router({
 
     const tiktok_user = data.data.user as TikTok_User;
 
-    // Sync TikTok data to Clerk user profile
+    // Check for existing user with this TikTok open_id
+    const existing_users = await client.users.getUserList({
+      externalId: [tiktok_user.open_id],
+    });
+
+    // Delete any duplicate users (not the current user)
+    for (const user of existing_users.data) {
+      if (user.id !== ctx.userId) {
+        await client.users.deleteUser(user.id);
+      }
+    }
+
+    // Sync TikTok data to Clerk user profile and set externalId
     await client.users.updateUser(ctx.userId, {
+      externalId: tiktok_user.open_id,
       firstName: tiktok_user.display_name,
     });
 
