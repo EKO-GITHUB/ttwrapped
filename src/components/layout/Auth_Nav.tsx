@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useData_store } from "@/stores/useData_store";
 import { trpc } from "@/trpc/client";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -37,15 +37,12 @@ export default function Auth_Nav() {
           <SignedOut>
             <SignInButton mode="modal">
               <Button
-                variant="ghost"
+                className={"hover:cursor-pointer"}
                 size="sm"
               >
                 Sign in
               </Button>
             </SignInButton>
-            <SignUpButton mode="modal">
-              <Button size="sm">Sign up</Button>
-            </SignUpButton>
           </SignedOut>
 
           <SignedIn>
