@@ -14,10 +14,10 @@ export default function Download_Button({
       variant="outline"
       onClick={on_download}
       disabled={is_downloading}
-      className="gap-2"
+      className="gap-2 bg-green-600 text-white"
     >
       {is_downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-      {is_downloading ? "Downloading..." : "Download Ready"}
+      {is_downloading ? "Downloading..." : "Ready"}
     </Button>
   );
 }
