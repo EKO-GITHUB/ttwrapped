@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, Tooltip_Content, Tooltip_Trigger } from "@/components/ui/tooltip";
 import { useData_store } from "@/stores/useData_store";
 import { trpc } from "@/trpc/client";
-import { Download, Loader2, X } from "lucide-react";
+import { AlertCircle, Download, Loader2, X } from "lucide-react";
 
 export default function Data_Request_Button() {
   const handle_file_load = useData_store((state) => state.handle_file_load);
   const [is_downloading, set_is_downloading] = useState(false);
   const [is_eea_uk, set_is_eea_uk] = useState(false);
+  const [error, set_error] = useState<string | null>(null);
   const has_auto_downloaded = useRef(false);
 
   useEffect(() => {
@@ -38,13 +39,21 @@ export default function Data_Request_Button() {
 
   const request_mutation = trpc.tiktok.request_data.useMutation({
     onSuccess: () => {
+      set_error(null);
       refetch_state();
+    },
+    onError: (err) => {
+      set_error(err.message);
     },
   });
 
   const cancel_mutation = trpc.tiktok.cancel_request.useMutation({
     onSuccess: () => {
+      set_error(null);
       refetch_state();
+    },
+    onError: (err) => {
+      set_error(err.message);
     },
   });
 
@@ -65,8 +74,9 @@ export default function Data_Request_Button() {
         refetch_state();
       }
     },
-    onError: () => {
+    onError: (err) => {
       set_is_downloading(false);
+      set_error(err.message);
     },
   });
 
@@ -96,6 +106,35 @@ export default function Data_Request_Button() {
 
   if (!is_eea_uk) {
     return null;
+  }
+
+  if (error) {
+    return (
+      <Tooltip>
+        <Tooltip_Trigger asChild>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => {
+              set_error(null);
+              request_mutation.mutate();
+            }}
+            disabled={request_mutation.isPending}
+            className="gap-2"
+          >
+            {request_mutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <AlertCircle className="h-4 w-4" />
+            )}
+            Retry
+          </Button>
+        </Tooltip_Trigger>
+        <Tooltip_Content>
+          <p>{error}</p>
+        </Tooltip_Content>
+      </Tooltip>
+    );
   }
 
   if (status === "none" || status === "expired" || status === "cancelled") {
