@@ -1,18 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import { useData_store } from "@/stores/useData_store";
+import { trpc } from "@/trpc/client";
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Auth_Nav() {
-  const { user } = useUser();
   const view_state = useData_store((state) => state.view_state);
   const reset = useData_store((state) => state.reset);
-
-  const tiktokAccount = user?.externalAccounts.find((acc) => acc.provider === "tiktok");
-  console.log(user);
+  trpc.tiktok.get_user.useQuery();
 
   if (view_state === "slideshow") {
     return null;
@@ -52,13 +50,13 @@ export default function Auth_Nav() {
 
           <SignedIn>
             <UserButton
+              showName
               appearance={{
                 elements: {
                   avatarBox: "h-8 w-8",
                 },
               }}
             />
-            {tiktokAccount && tiktokAccount.username}
           </SignedIn>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import Auth_Nav from "@/components/layout/Auth_Nav";
+import { TRPCProvider } from "@/trpc/Provider";
 
 export const metadata: Metadata = {
   title: "TTWrapped - Your TikTok Year in Review",
@@ -63,9 +64,11 @@ export default function RootLayout({
           />
         </head>
         <body className="font-tiktok">
-          <Auth_Nav />
-          {children}
-          <Analytics />
+          <TRPCProvider>
+            <Auth_Nav />
+            {children}
+            <Analytics />
+          </TRPCProvider>
         </body>
       </html>
     </ClerkProvider>
