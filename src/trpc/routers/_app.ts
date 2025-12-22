@@ -1,5 +1,5 @@
 import { router } from "../init";
-import { tiktok_router } from "./tiktok";
+import { tiktok_router } from "./tiktok/router";
 
 export const app_router = router({
   tiktok: tiktok_router,
