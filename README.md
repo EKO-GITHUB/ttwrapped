@@ -71,46 +71,6 @@ The app will:
 
 All data processing happens locally in your browser. Your TikTok data never leaves your computer. The application does not send any information to external servers.
 
-## Tech Stack
-
-- Next.js 16 with App Router
-- React 19 with React Compiler
-- TypeScript (strict mode)
-- Tailwind CSS 4
-- Zustand for state management
-- Zod for data validation
-- shadcn/ui components
-
-## Development
-
-### Code Formatting
-
-The project uses Prettier with Tailwind CSS class sorting:
-
-```bash
-npx prettier --write .
-```
-
-### Linting
-
-```bash
-npm run lint
-```
-
-## Project Structure
-
-```
-src/
-├── app/                    # Next.js pages and routes
-├── components/
-│   ├── analytics/          # Dashboard components
-│   ├── slideshow/          # Wrapped slideshow
-│   ├── custom/             # Reusable components
-│   └── ui/                 # UI primitives
-├── stores/                 # State management
-└── types/                  # TypeScript type definitions
-```
-
 ## Contributing
 
 Contributions are welcome. Please open an issue first to discuss what you would like to change.
