@@ -18,7 +18,7 @@ export default function Data_Request_Button() {
   const is_eea_uk = document.cookie.includes("is_eea_uk=1");
 
   const { data: request_state, refetch: refetch_state } = trpc.tiktok.get_request_state.useQuery(undefined, {
-    enabled: is_eea_uk === true,
+    enabled: is_eea_uk,
     refetchInterval: (query) => {
       const data = query.state.data;
       if (!data || data.status !== "pending") return false;
@@ -28,7 +28,7 @@ export default function Data_Request_Button() {
   });
 
   const { refetch: check_status, isFetching: is_checking_status } = trpc.tiktok.check_status.useQuery(undefined, {
-    enabled: is_eea_uk === true && request_state?.status === "pending",
+    enabled: is_eea_uk && request_state?.status === "pending",
     refetchInterval: (query) => {
       const data = query.state.data;
       if (!data || data.status !== "pending") return false;
