@@ -1,16 +1,24 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useData_store } from "@/stores/useData_store";
 import { trpc } from "@/trpc/client";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Auth_Nav() {
   const view_state = useData_store((state) => state.view_state);
   const reset = useData_store((state) => state.reset);
-  trpc.tiktok.get_user.useQuery();
+  const { user } = useUser();
+  const { data: tiktok_user } = trpc.tiktok.get_user.useQuery();
+
+  useEffect(() => {
+    if (tiktok_user) {
+      user?.reload();
+    }
+  }, [tiktok_user, user]);
 
   if (view_state === "slideshow") {
     return null;
