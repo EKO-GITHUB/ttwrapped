@@ -1,24 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { useData_store } from "@/stores/useData_store";
 import { trpc } from "@/trpc/client";
-import Region_Modal from "./Region_Modal";
-import Error_Button from "./Error_Button";
-import Request_Button from "./Request_Button";
-import Pending_Button from "./Pending_Button";
+import { useEffect, useRef, useState } from "react";
 import Download_Button from "./Download_Button";
+import Error_Button from "./Error_Button";
+import Pending_Button from "./Pending_Button";
+import Region_Modal from "./Region_Modal";
+import Request_Button from "./Request_Button";
 
 export default function Data_Request_Button() {
   const handle_file_load = useData_store((state) => state.handle_file_load);
   const [is_downloading, set_is_downloading] = useState(false);
-  const [is_eea_uk, set_is_eea_uk] = useState<boolean | null>(null);
+  const [is_eea_uk, set_is_eea_uk] = useState<boolean | null>(document.cookie.includes("is_eea_uk=1"));
   const [error, set_error] = useState<string | null>(null);
   const has_auto_downloaded = useRef(false);
-
-  useEffect(() => {
-    set_is_eea_uk(document.cookie.includes("is_eea_uk=1"));
-  }, []);
 
   const { data: request_state, refetch: refetch_state } = trpc.tiktok.get_request_state.useQuery(undefined, {
     enabled: is_eea_uk === true,
@@ -30,7 +26,7 @@ export default function Data_Request_Button() {
     refetchIntervalInBackground: false,
   });
 
-  const { refetch: check_status } = trpc.tiktok.check_status.useQuery(undefined, {
+  const { refetch: check_status, isFetching: is_checking_status } = trpc.tiktok.check_status.useQuery(undefined, {
     enabled: is_eea_uk === true && request_state?.status === "pending",
     refetchInterval: (query) => {
       const data = query.state.data;
@@ -142,7 +138,11 @@ export default function Data_Request_Button() {
     return (
       <Pending_Button
         is_cancelling={cancel_mutation.isPending}
+        is_refreshing={is_checking_status}
         on_cancel={() => cancel_mutation.mutate()}
+        on_refresh={() => {
+          check_status().then(() => refetch_state());
+        }}
       />
     );
   }
