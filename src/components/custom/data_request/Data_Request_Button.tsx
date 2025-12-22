@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Tooltip, Tooltip_Content, Tooltip_Trigger } from "@/components/ui/tooltip";
 import { useData_store } from "@/stores/useData_store";
 import { trpc } from "@/trpc/client";
-import { AlertCircle, Download, Loader2, X } from "lucide-react";
+import Region_Modal from "./Region_Modal";
+import Error_Button from "./Error_Button";
+import Request_Button from "./Request_Button";
+import Pending_Button from "./Pending_Button";
+import Download_Button from "./Download_Button";
 
 export default function Data_Request_Button() {
   const handle_file_load = useData_store((state) => state.handle_file_load);
   const [is_downloading, set_is_downloading] = useState(false);
-  const [is_eea_uk, set_is_eea_uk] = useState(false);
+  const [is_eea_uk, set_is_eea_uk] = useState<boolean | null>(null);
   const [error, set_error] = useState<string | null>(null);
   const has_auto_downloaded = useRef(false);
 
@@ -19,6 +21,7 @@ export default function Data_Request_Button() {
   }, []);
 
   const { data: request_state, refetch: refetch_state } = trpc.tiktok.get_request_state.useQuery(undefined, {
+    enabled: is_eea_uk === true,
     refetchInterval: (query) => {
       const data = query.state.data;
       if (!data || data.status !== "pending") return false;
@@ -28,7 +31,7 @@ export default function Data_Request_Button() {
   });
 
   const { refetch: check_status } = trpc.tiktok.check_status.useQuery(undefined, {
-    enabled: request_state?.status === "pending",
+    enabled: is_eea_uk === true && request_state?.status === "pending",
     refetchInterval: (query) => {
       const data = query.state.data;
       if (!data || data.status !== "pending") return false;
@@ -101,106 +104,58 @@ export default function Data_Request_Button() {
     }
   }, [request_state?.status, check_status]);
 
-  const status = request_state?.status ?? "none";
-  const is_loading = request_mutation.isPending || cancel_mutation.isPending || is_downloading;
-
-  if (!is_eea_uk) {
+  if (is_eea_uk === null) {
     return null;
   }
 
+  if (!is_eea_uk) {
+    return <Region_Modal />;
+  }
+
+  const status = request_state?.status ?? "none";
+  const is_loading = request_mutation.isPending || cancel_mutation.isPending || is_downloading;
+
   if (error) {
     return (
-      <Tooltip>
-        <Tooltip_Trigger asChild>
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => {
-              set_error(null);
-              request_mutation.mutate();
-            }}
-            disabled={request_mutation.isPending}
-            className="gap-2"
-          >
-            {request_mutation.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <AlertCircle className="h-4 w-4" />
-            )}
-            Retry
-          </Button>
-        </Tooltip_Trigger>
-        <Tooltip_Content>
-          <p>{error}</p>
-        </Tooltip_Content>
-      </Tooltip>
+      <Error_Button
+        error={error}
+        is_retrying={request_mutation.isPending}
+        on_retry={() => {
+          set_error(null);
+          request_mutation.mutate();
+        }}
+      />
     );
   }
 
   if (status === "none" || status === "expired" || status === "cancelled") {
     return (
-      <Tooltip>
-        <Tooltip_Trigger asChild>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => request_mutation.mutate()}
-            disabled={is_loading}
-            className="gap-2"
-          >
-            {is_loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-            Request Data
-          </Button>
-        </Tooltip_Trigger>
-        {status === "expired" && (
-          <Tooltip_Content>
-            <p>Previous request expired. Request new data.</p>
-          </Tooltip_Content>
-        )}
-      </Tooltip>
+      <Request_Button
+        status={status}
+        is_loading={is_loading}
+        on_request={() => request_mutation.mutate()}
+      />
     );
   }
 
   if (status === "pending") {
     return (
-      <div className="flex items-center gap-2">
-        <Button
-          size="sm"
-          variant="outline"
-          disabled
-          className="gap-2"
-        >
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Preparing...
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => cancel_mutation.mutate()}
-          disabled={cancel_mutation.isPending}
-          className="h-8 w-8 p-0"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
+      <Pending_Button
+        is_cancelling={cancel_mutation.isPending}
+        on_cancel={() => cancel_mutation.mutate()}
+      />
     );
   }
 
   if (status === "downloading") {
     return (
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => {
+      <Download_Button
+        is_downloading={is_downloading}
+        on_download={() => {
           set_is_downloading(true);
           download_mutation.mutate();
         }}
-        disabled={is_downloading}
-        className="gap-2"
-      >
-        {is_downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-        {is_downloading ? "Downloading..." : "Download Ready"}
-      </Button>
+      />
     );
   }
 
