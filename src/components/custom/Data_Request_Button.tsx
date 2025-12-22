@@ -10,7 +10,12 @@ import { Download, Loader2, X } from "lucide-react";
 export default function Data_Request_Button() {
   const handle_file_load = useData_store((state) => state.handle_file_load);
   const [is_downloading, set_is_downloading] = useState(false);
+  const [is_eea_uk, set_is_eea_uk] = useState(false);
   const has_auto_downloaded = useRef(false);
+
+  useEffect(() => {
+    set_is_eea_uk(document.cookie.includes("is_eea_uk=1"));
+  }, []);
 
   const { data: request_state, refetch: refetch_state } = trpc.tiktok.get_request_state.useQuery(undefined, {
     refetchInterval: (query) => {
@@ -88,6 +93,10 @@ export default function Data_Request_Button() {
 
   const status = request_state?.status ?? "none";
   const is_loading = request_mutation.isPending || cancel_mutation.isPending || is_downloading;
+
+  if (!is_eea_uk) {
+    return null;
+  }
 
   if (status === "none" || status === "expired" || status === "cancelled") {
     return (
