@@ -12,9 +12,10 @@ import Request_Button from "./Request_Button";
 export default function Data_Request_Button() {
   const handle_file_load = useData_store((state) => state.handle_file_load);
   const [is_downloading, set_is_downloading] = useState(false);
-  const [is_eea_uk, set_is_eea_uk] = useState<boolean | null>(document.cookie.includes("is_eea_uk=1"));
   const [error, set_error] = useState<string | null>(null);
   const has_auto_downloaded = useRef(false);
+
+  const is_eea_uk = document.cookie.includes("is_eea_uk=1");
 
   const { data: request_state, refetch: refetch_state } = trpc.tiktok.get_request_state.useQuery(undefined, {
     enabled: is_eea_uk === true,
