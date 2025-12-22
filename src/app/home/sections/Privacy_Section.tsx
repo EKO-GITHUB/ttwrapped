@@ -12,44 +12,49 @@ export default function Privacy_Section() {
     >
       <div className="space-y-4 text-gray-600 dark:text-gray-400">
         <p>
-          <strong className="text-gray-800 dark:text-gray-200">Your data stays on your device.</strong> All processing
-          happens entirely in your browser. Your TikTok data export is never uploaded to any server, never transmitted
-          over the internet, and never stored anywhere outside your own computer or phone.
+          <strong className="text-gray-800 dark:text-gray-200">Your TikTok data stays on your device.</strong> All
+          analytics processing happens entirely in your browser. Your watch history, comments, likes, and messages are
+          never uploaded to any server. The statistics, charts, and insights are generated locally in real-time, and
+          once you close the page, all processed data is gone.
         </p>
 
         <p>
-          <strong className="text-gray-800 dark:text-gray-200">We have zero access to your information.</strong> Unlike
-          other analytics tools, TTWrapped cannot see, collect, or store any of your personal data. There are no
-          accounts, no sign-ups, and no databases storing your information. We physically cannot access your data
-          because it never reaches us.
+          <strong className="text-gray-800 dark:text-gray-200">Optional sign-in.</strong> You can use TTWrapped without
+          creating an account by manually uploading your TikTok data export. Signing in with TikTok is completely
+          optional and only required if you want to use the automatic data request feature (available to EEA/UK users).
+        </p>
+
+        <p>
+          <strong className="text-gray-800 dark:text-gray-200">Minimal data stored.</strong> If you choose to sign in,
+          we store only your TikTok profile information (display name and avatar) and the status of any data export
+          requests. Your actual TikTok activity data (watch history, comments, likes, messages) is never stored on our
+          servers - it is downloaded directly to your browser and processed locally.
+        </p>
+
+        <p>
+          <strong className="text-gray-800 dark:text-gray-200">Download or delete your data.</strong> Signed-in users
+          can download all data we store about them directly from their profile menu. You can also delete your account
+          at any time, which removes all stored information.
         </p>
 
         <p>
           <strong className="text-gray-800 dark:text-gray-200">Your TikTok data is never shared.</strong> We do not
-          collect, sell, or share any of your TikTok data with third parties. The personal information in your data
-          export - your watch history, comments, likes, and messages - stays completely private.
-        </p>
-
-        <p>
-          <strong className="text-gray-800 dark:text-gray-200">100% client-side processing.</strong> The entire
-          application runs in your browser using JavaScript. When you upload your TikTok data export, the file is read
-          and processed locally. The statistics, charts, and insights are all generated on your device in real-time.
-          Once you close this website, all processed data is gone - nothing is stored or cached. Your original file
-          remains safely in your downloads folder, untouched.
+          collect, sell, or share any of your TikTok activity data with third parties. The personal information in your
+          data export stays completely private and is processed only on your device.
         </p>
 
         <p>
           <strong className="text-gray-800 dark:text-gray-200">Open source and transparent.</strong> Our entire codebase
           is publicly available for anyone to inspect. You can verify exactly how your data is processed and confirm
-          that nothing is being sent anywhere. Trust through transparency.
+          that your TikTok activity never leaves your browser. Trust through transparency.
         </p>
 
         <p>
-          <strong className="text-gray-800 dark:text-gray-200">Analytics disclaimer.</strong> While your TikTok data
-          remains completely private and never leaves your device, we use Vercel Web Analytics to collect anonymous
-          usage statistics such as page views, visitor count, and geographic regions. This helps us understand how the
-          service is being used and improve the experience. Vercel Analytics does not use cookies, does not collect
-          personal information, and is fully GDPR compliant. No analytics data is ever connected to your TikTok data.
+          <strong className="text-gray-800 dark:text-gray-200">Analytics disclaimer.</strong> We use Vercel Web
+          Analytics to collect anonymous usage statistics such as page views, visitor count, and geographic regions.
+          This helps us understand how the service is being used. Vercel Analytics does not use cookies, does not
+          collect personal information, and is fully GDPR compliant. No analytics data is ever connected to your TikTok
+          data.
         </p>
 
         <p>
