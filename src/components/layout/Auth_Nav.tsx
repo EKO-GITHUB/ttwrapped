@@ -2,14 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
+import { useData_store } from "@/stores/useData_store";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Auth_Nav() {
   const { user } = useUser();
+  const view_state = useData_store((state) => state.view_state);
 
   const tiktokAccount = user?.externalAccounts.find((acc) => acc.provider === "tiktok");
   console.log(user);
+
+  if (view_state === "slideshow") {
+    return null;
+  }
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/80 backdrop-blur-md">
