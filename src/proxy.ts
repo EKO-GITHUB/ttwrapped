@@ -37,7 +37,7 @@ const EEA_UK_COUNTRIES = [
 
 export default clerkMiddleware(async (auth, request) => {
   const country = request.headers.get("x-vercel-ip-country") || "";
-  const is_eea_uk = EEA_UK_COUNTRIES.includes(country);
+  const is_eea_uk = process.env.NODE_ENV === "development" ? true : EEA_UK_COUNTRIES.includes(country);
 
   const response = NextResponse.next();
   response.cookies.set("is_eea_uk", is_eea_uk ? "1" : "0", {

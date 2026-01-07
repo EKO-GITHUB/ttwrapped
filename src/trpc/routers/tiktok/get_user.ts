@@ -1,7 +1,7 @@
+import type { TikTok_User } from "@/types/TikTok_User";
 import { clerkClient } from "@clerk/nextjs/server";
 import { protected_procedure } from "../../init";
 import { TIKTOK_API_URL, TIKTOK_FIELDS } from "./helpers";
-import type { TikTok_User } from "@/types/TikTok_User";
 
 export const get_user = protected_procedure.query(async ({ ctx }): Promise<TikTok_User> => {
   const client = await clerkClient();
@@ -23,7 +23,7 @@ export const get_user = protected_procedure.query(async ({ ctx }): Promise<TikTo
   const tiktok_user = data.data.user as TikTok_User;
 
   const existing_users = await client.users.getUserList({
-    externalId: [tiktok_user.open_id],
+    externalId: [tiktok_user.union_id],
   });
 
   for (const user of existing_users.data) {
@@ -33,7 +33,7 @@ export const get_user = protected_procedure.query(async ({ ctx }): Promise<TikTo
   }
 
   await client.users.updateUser(ctx.userId, {
-    externalId: tiktok_user.open_id,
+    externalId: tiktok_user.union_id,
     firstName: tiktok_user.display_name,
   });
 

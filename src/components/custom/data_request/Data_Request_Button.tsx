@@ -1,7 +1,9 @@
 "use client";
 
+import Unavailable_Button from "@/components/custom/data_request/Unavailable_Button";
 import { useData_store } from "@/stores/useData_store";
 import { trpc } from "@/trpc/client";
+import { useUser } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
 import Download_Button from "./Download_Button";
 import Error_Button from "./Error_Button";
@@ -14,6 +16,10 @@ export default function Data_Request_Button() {
   const [is_downloading, set_is_downloading] = useState(false);
   const [error, set_error] = useState<string | null>(null);
   const has_auto_downloaded = useRef(false);
+  const user = useUser();
+  const userHasApprovedScope = user.user?.externalAccounts.some((account) =>
+    account.approvedScopes.includes("portability.all"),
+  );
 
   const is_eea_uk = document.cookie.includes("is_eea_uk=1");
 
@@ -101,16 +107,16 @@ export default function Data_Request_Button() {
     }
   }, [request_state?.status, check_status]);
 
-  if (is_eea_uk === null) {
-    return null;
-  }
-
   if (!is_eea_uk) {
     return <Region_Modal />;
   }
 
   const status = request_state?.status ?? "none";
   const is_loading = request_mutation.isPending || cancel_mutation.isPending || is_downloading;
+
+  if (!userHasApprovedScope) {
+    return <Unavailable_Button />;
+  }
 
   if (error) {
     return (
